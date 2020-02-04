@@ -1,0 +1,122 @@
+import 'package:flutter/material.dart';
+import 'package:megacademia/config.dart';
+import 'package:meta/meta.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/models.dart';
+import '../actions/actions.dart';
+import '../theme.dart';
+import '../factory.dart';
+
+class BootstrapPage extends StatelessWidget {
+  BootstrapPage({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _Body(
+        store: StoreProvider.of<AppState>(context),
+      ),
+    );
+  }
+}
+
+class _Body extends StatefulWidget{
+  final Store<AppState> store;
+
+  _Body({
+    Key key,
+    @required this.store,
+  }) : super(key : key);
+
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body>{
+  var _isFailed = false;
+
+  @override
+  void initState(){
+    super.initState();
+
+    _bootstrap();
+  }
+
+  void _bootstrap() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    final _logger = MaFactory().getLogger('Maservice');
+    var clientId = prefs.get(MaGlobalValue.clientId);
+    if(clientId != null){
+      MaMeta.clientId = clientId;
+      MaMeta.clientSecret = prefs.get(MaGlobalValue.clientSecret);
+      MaMeta.userAccessToken = prefs.get(MaGlobalValue.accessToken);
+      _logger.fine('Loading from storage');
+
+      Navigator.of(context).pushReplacementNamed('/login');
+    }
+    else{
+      widget.store.dispatch(accountInfoAction(
+          onSucceed: (clientId){
+            Navigator.of(context).pushReplacementNamed('/login');
+          },
+          onFailed: (notice){
+            setState(() {
+              _isFailed = true;
+            });
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text(notice.message),
+              duration: notice.duration,
+            ));
+          }
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Spacer(flex: 5),
+          FractionallySizedBox(
+            widthFactor: 0.5,
+            child: Image(
+              image: AssetImage('images/ma_logo_with_bottom_word.png'),
+            ),
+          ),
+          Spacer(),
+          _isFailed ? Column(
+            children: <Widget>[
+              Text(
+                '网络请求出错',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+              FlatButton(
+                onPressed: (){
+                  setState(() {
+                    _isFailed = false;
+                  });
+                  _bootstrap();
+                },
+                child: Text(
+                  '再试一次',
+                  style: TextStyle(color: MaTheme.maYellows),
+                ),
+              )
+            ],
+          )
+              : Text('网络请求中...'),
+          Spacer(flex: 5),
+        ],
+      ),
+    );
+  }
+}

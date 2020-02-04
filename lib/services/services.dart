@@ -1,0 +1,1 @@
+export 'megacademia.dart';
