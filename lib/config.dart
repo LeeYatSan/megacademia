@@ -20,6 +20,7 @@ class MaGlobalValue {
   static const accessToken = "access_token";
   static const redirectUrl = "urn:ietf:wg:oauth:2.0:oob";
   static const scopes = 'read write follow push';
+  static const userInfo = 'user_info';
   static const fontFamily = 'MaIconFonts';
   static const aboutMastodon = 'Mastodon.social（中文译:万象）是一个免费开源的去中心化的分布式微博客社交网络。它的用户界面和操作方式跟推特类似，但是整个网络并非由单一机构运作，却是由多个由不同营运者独立运作的服务器以联邦方式交换数据而组成的去中心化社交网络。';
   static const aboutMegacademia = 'Megacademia.cn（中文译:学术万象）是一个基于Mastodon开源引擎的学术界社交软件，旨在创造更加专业、高效的学术研究社交环境，为学术人员提供一个交流、分享的平台。';

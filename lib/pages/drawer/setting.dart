@@ -6,6 +6,7 @@ import 'package:megacademia/pages/account/login/login.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../factory.dart';
 import '../../config.dart';
@@ -60,6 +61,13 @@ class _BodyState extends State<_Body>{
     );
   }
 
+  void _logout() async{
+//    SharedPreferences prefs = await SharedPreferences.getInstance();
+//    print(MaMeta.user.toJson().toString());
+//    prefs.setString(MaGlobalValue.userInfo, MaMeta.user.toJson().toString());
+    Navigator.pushReplacementNamed(TabPage.globalKey.currentContext, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,14 +86,15 @@ class _BodyState extends State<_Body>{
                 onChanged: (_changed){
                   print('Locked: $_changed');
                   this.setState(() {
-                    var new_lock_state = _changed;
+                    MaMeta.user.locked = _changed;
                     widget.store.dispatch(accountEditAction(
                       MaMeta.userAccessToken,
-                      locked: new_lock_state,
+                      locked: _changed,
                       onSucceed: (user){
                         MaMeta.user = user;
                       },
                       onFailed: (notice){
+                        MaMeta.user.locked = !_changed;
                         createFailedSnackBar(context, notice);
                       }
                     ));
@@ -167,7 +176,7 @@ class _BodyState extends State<_Body>{
                       ),
                       color: Colors.redAccent,
                       onPressed: (){
-                        Navigator.pushReplacementNamed(TabPage.globalKey.currentContext, '/login');
+                        _logout();
                       },
                       shape: RoundedRectangleBorder(
                         side: BorderSide(

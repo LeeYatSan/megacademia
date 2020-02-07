@@ -5,11 +5,11 @@ import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../theme.dart';
 import '../../../config.dart';
 import '../../../components/common/app_navigate.dart';
-import '../../../components/common/app_bar.dart';
 import '../../../components/common/failed_snack_bar.dart';
 import 'authorize_user.dart';
 import '../../../factory.dart';
@@ -67,7 +67,12 @@ class _BodyState extends State<_Body>{
         style:TextStyle(fontSize: 16, color:  MaTheme.maYellows));
   }
 
-  void _webAuthorize() {
+  void _webAuthorize() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(MaMeta.clientId == null || MaMeta.clientId ==''){
+      MaMeta.clientId = prefs.get(MaGlobalValue.clientId);
+      MaMeta.clientSecret = prefs.get(MaGlobalValue.clientSecret);
+    }
     AppNavigate.push(context, AuthorizeLogin(), callBack: (code) {
       widget.store.dispatch(accountAccessTokenAction(
         true,
