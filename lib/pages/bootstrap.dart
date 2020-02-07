@@ -67,7 +67,7 @@ class _BodyState extends State<_Body>{
 
   void _bootstrap() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-//    prefs.clear(); // 清空存储数据
+//    prefs.clear();
     var accountAccessToken = prefs.get(MaGlobalValue.accessToken);
     if(accountAccessToken != null){
       widget.store.dispatch(verifyAccessTokenAction(

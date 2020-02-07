@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 import '../../factory.dart';
 import '../../meta.dart';
@@ -16,9 +18,10 @@ class ProfileSideBarButtom extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
         child: CircleAvatar(
-            backgroundImage: (MaMeta.user.avatar != '')
-                ? NetworkImage(MaMeta.user.avatar)
-                : AssetImage("assets/images/missing.png")
+          backgroundImage: MaMeta.user.avatar == '' ? null
+              : NetworkImage(MaMeta.user.avatar),
+          child: MaMeta.user.avatar == '' ?
+            Image.asset('assets/images/missing.png') : null,
         )
     );
   }

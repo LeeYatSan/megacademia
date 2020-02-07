@@ -77,8 +77,18 @@ class _BodyState extends State<_Body>{
       widget.store.dispatch(accountAccessTokenAction(
         true,
         onSucceed:(){
-          Navigator.pushReplacementNamed(context, '/tab');
-          _logger.fine('access token: ${MaMeta.userAccessToken}');
+          widget.store.dispatch(verifyAccessTokenAction(
+            true,
+            MaMeta.userAccessToken,
+            onAccountSucceed: (user){
+              MaMeta.user = user;
+              Navigator.of(context).pushReplacementNamed('/tab');
+              _logger.fine('access token: ${MaMeta.userAccessToken}');
+            },
+            onFailed: (notice){
+              createFailedSnackBar(context, notice);
+            },
+          ));
         },
         onFailed: (notice){
           createFailedSnackBar(context, notice);

@@ -87,9 +87,10 @@ class UserInfo extends StatelessWidget{
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           CircleAvatar(
-            backgroundImage: (MaMeta.user.avatar != '')
-                ? NetworkImage(MaMeta.user.avatar)
-                : AssetImage("assets/images/missing.png"),
+            backgroundImage: MaMeta.user.avatar == '' ? null
+                : NetworkImage(MaMeta.user.avatar),
+            child: MaMeta.user.avatar == '' ?
+              Image.asset('assets/images/missing.png') : null,
             radius: 30.0,
           ),
           Container(

@@ -84,7 +84,6 @@ class _BodyState extends State<_Body>{
                 value: MaMeta.user.locked,
                 activeColor: MaTheme.maYellows,
                 onChanged: (_changed){
-                  print('Locked: $_changed');
                   this.setState(() {
                     MaMeta.user.locked = _changed;
                     widget.store.dispatch(accountEditAction(
