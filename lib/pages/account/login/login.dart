@@ -8,9 +8,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../../theme.dart';
 import '../../../config.dart';
-import '../../../utils/app_navigate.dart';
+import '../../../components/common/app_navigate.dart';
+import '../../../components/common/app_bar.dart';
+import '../../../components/common/failed_snack_bar.dart';
 import 'authorize_user.dart';
 import '../../../factory.dart';
+import '../../../meta.dart';
 import '../../../models/models.dart';
 import 'register.dart';
 
@@ -23,7 +26,8 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('登录 / 注册', style:TextStyle(color:  Colors.white)),
+        title: Text('登录 / 注册', style: TextStyle(color: Colors.white),),
+        backgroundColor: MaTheme.maYellows,
       ),
       body: _Body(store: StoreProvider.of<AppState>(context),),
     );
@@ -68,13 +72,11 @@ class _BodyState extends State<_Body>{
       widget.store.dispatch(accountAccessTokenAction(
         true,
         onSucceed:(){
+          Navigator.pushReplacementNamed(context, '/tab');
           _logger.fine('access token: ${MaMeta.userAccessToken}');
         },
         onFailed: (notice){
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(notice.message),
-            duration: notice.duration,
-          ));
+          createFailedSnackBar(context, notice);
         },
         code: code
       ));
@@ -82,21 +84,6 @@ class _BodyState extends State<_Body>{
   }
 
   void _register() {
-//    AppNavigate.push(context, RegisterAccount(), callBack: (code) {
-//      widget.store.dispatch(accountAccessTokenAction(
-//          true,
-//          onSucceed:(){
-//            _logger.fine('access token: ${MaMeta.userAccessToken}');
-//          },
-//          onFailed: (notice){
-//            Scaffold.of(context).showSnackBar(SnackBar(
-//              content: Text(notice.message),
-//              duration: notice.duration,
-//            ));
-//          },
-//          code: code
-//      ));
-//    });
     AppNavigate.push(context, RegisterAccount());
   }
 
@@ -145,7 +132,7 @@ class _BodyState extends State<_Body>{
                 Spacer(flex: 1),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: Image.asset('images/login.png'),
+                  child: Image.asset('assets/images/login.png'),
                 ),
                 Padding(
                   padding: EdgeInsets.all(10),

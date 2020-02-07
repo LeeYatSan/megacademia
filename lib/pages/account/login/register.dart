@@ -3,7 +3,8 @@ import '../../../theme.dart';
 import '../../../config.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-import '../../../utils/app_navigate.dart';
+import '../../../components/common/app_navigate.dart';
+import '../../../components/common/app_bar.dart';
 import '../../../factory.dart';
 
 
@@ -26,11 +27,8 @@ class RegisterAccount extends StatelessWidget {
     });
 
     return WebviewScaffold(
-      url: MaApi.register,
-      appBar: AppBar(
-        title: Text('注册', style: TextStyle(color: Colors.white)),
-        backgroundColor: MaTheme.maYellows,
-      ),
+      url: MaApi.Register,
+      appBar: createAppBar(context, '注册'),
       withZoom: true,
       withLocalStorage: true,
       clearCookies: true,
@@ -54,7 +52,7 @@ Future<void> _showRegisterSuccessedDiadlog(BuildContext context){
                 Text("欢迎加入 「Megacademia 学术万象」！请前往您所使用的注册邮箱查收确认邮件，并根据指引完成账号确认！"),
                 Padding(
                   padding: EdgeInsets.fromLTRB(10, 60, 10, 10),
-                  child: Image(image: AssetImage('images/ma_welcome.png'),),
+                  child: Image(image: AssetImage('assets/images/ma_welcome.png'),),
                 ),
               ],
             ),

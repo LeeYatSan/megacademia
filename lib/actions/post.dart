@@ -244,7 +244,7 @@ ThunkAction<AppState> likePostAction({
 
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(LikePostAction(
-          userId: store.state.account.user.id,
+//          userId: store.state.account.user.id,
           postId: postId,
         ));
         if (onSucceed != null) onSucceed();
@@ -267,7 +267,7 @@ ThunkAction<AppState> unlikePostAction({
 
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(UnlikePostAction(
-          userId: store.state.account.user.id,
+//          userId: store.state.account.user.id,
           postId: postId,
         ));
         if (onSucceed != null) onSucceed();

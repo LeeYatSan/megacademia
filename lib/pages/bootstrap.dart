@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
 import '../actions/actions.dart';
 import '../theme.dart';
+import '../meta.dart';
 import '../factory.dart';
 
 class BootstrapPage extends StatelessWidget {
@@ -47,34 +48,45 @@ class _BodyState extends State<_Body>{
     _bootstrap();
   }
 
+  void _login(){
+    widget.store.dispatch(accountInfoAction(
+        onSucceed: (clientId){
+          Navigator.of(context).pushReplacementNamed('/login');
+        },
+        onFailed: (notice){
+          setState(() {
+            _isFailed = true;
+          });
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(notice.message),
+            duration: notice.duration,
+          ));
+        }
+    ));
+  }
+
   void _bootstrap() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
-    final _logger = MaFactory().getLogger('Maservice');
-    var clientId = prefs.get(MaGlobalValue.clientId);
-    if(clientId != null){
-      MaMeta.clientId = clientId;
-      MaMeta.clientSecret = prefs.get(MaGlobalValue.clientSecret);
-      MaMeta.userAccessToken = prefs.get(MaGlobalValue.accessToken);
-      _logger.fine('Loading from storage');
-
-      Navigator.of(context).pushReplacementNamed('/login');
+//    prefs.clear(); // 清空存储数据
+    var accountAccessToken = prefs.get(MaGlobalValue.accessToken);
+    if(accountAccessToken != null){
+      widget.store.dispatch(verifyAccessTokenAction(
+        true,
+        accountAccessToken,
+        onAccountSucceed: (user){
+          MaMeta.user = user;
+          MaMeta.userAccessToken = accountAccessToken;
+          MaMeta.clientSecret = prefs.get(MaGlobalValue.clientSecret);
+          MaMeta.userAccessToken = prefs.get(MaGlobalValue.accessToken);
+          Navigator.of(context).pushReplacementNamed('/tab');
+        },
+        onFailed: (notice){
+          _login();
+        },
+      ));
     }
     else{
-      widget.store.dispatch(accountInfoAction(
-          onSucceed: (clientId){
-            Navigator.of(context).pushReplacementNamed('/login');
-          },
-          onFailed: (notice){
-            setState(() {
-              _isFailed = true;
-            });
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text(notice.message),
-              duration: notice.duration,
-            ));
-          }
-      ));
+      _login();
     }
   }
 
@@ -89,7 +101,7 @@ class _BodyState extends State<_Body>{
           FractionallySizedBox(
             widthFactor: 0.5,
             child: Image(
-              image: AssetImage('images/ma_logo_with_bottom_word.png'),
+              image: AssetImage('assets/images/ma_logo_with_bottom_word.png'),
             ),
           ),
           Spacer(),

@@ -48,7 +48,8 @@ UserState _usersFollowing(UserState state, UsersFollowingAction action) {
 
   var usersFollowing = Map<String, List<int>>.from(state.usersFollowing);
   usersFollowing[userId] = usersFollowing[userId] ?? [];
-  final userIds = action.users.map<int>((v) => v.id).toList();
+  final userIds = action.users.map<int>((v) => 0).toList();
+//  final userIds = action.users.map<int>((v) => v.id).toList();
   if (action.refresh) {
     usersFollowing[userId] = userIds;
   } else if (action.offset == null) {
@@ -75,7 +76,8 @@ UserState _followers(UserState state, FollowersAction action) {
 
   var followers = Map<String, List<int>>.from(state.followers);
   followers[userId] = followers[userId] ?? [];
-  final userIds = action.users.map<int>((v) => v.id).toList();
+  final userIds = action.users.map<int>((v) => 0).toList();
+//  final userIds = action.users.map<int>((v) => v.id).toList();
   if (action.refresh) {
     followers[userId] = userIds;
   } else if (action.offset == null) {
@@ -98,7 +100,7 @@ UserState _followUser(UserState state, FollowUserAction action) {
   var followingId = action.followingId.toString();
 
   var users = Map<String, UserEntity>.from(state.users);
-  users[followingId] = users[followingId].copyWith(isFollowing: true);
+//  users[followingId] = users[followingId].copyWith(isFollowing: true);
 
   var usersFollowing = Map<String, List<int>>.from(state.usersFollowing);
   usersFollowing[userId] = usersFollowing[userId] ?? [];
@@ -117,7 +119,7 @@ UserState _unfollowUser(UserState state, UnfollowUserAction action) {
   var followingId = action.followingId.toString();
 
   var users = Map<String, UserEntity>.from(state.users);
-  users[followingId] = users[followingId].copyWith(isFollowing: false);
+//  users[followingId] = users[followingId].copyWith(isFollowing: false);
 
   var usersFollowing = Map<String, List<int>>.from(state.usersFollowing);
   usersFollowing[userId] = usersFollowing[userId] ?? [];

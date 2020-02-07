@@ -1,6 +1,6 @@
 export 'bootstrap.dart';
 export 'home.dart';
-export 'me.dart';
+export 'notification.dart';
 //export 'publish.dart';
 export 'tab.dart';
 //
@@ -18,3 +18,4 @@ export 'account/login/login.dart';
 //export 'user/followers.dart';
 //export 'user/user.dart';
 //export 'user/users_following.dart';
+export 'drawer/setting.dart';

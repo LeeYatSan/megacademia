@@ -48,9 +48,10 @@ class MaService {
       String method,
       String path, {
         dynamic data,
+        dynamic headers,
       }) async {
     if (MaConfig.isLogApi) {
-      _logger.fine('request: $method $path');
+      _logger.fine('request: $method ${MaConfig.maApiBaseUrl}$path');
     }
 
     var response = Response();
@@ -58,7 +59,7 @@ class MaService {
       response = await _client.request(
         path,
         data: data,
-        options: Options(method: method),
+        options: Options(method: method, headers: headers),
       );
     } catch (e) {
       _logger.severe('DioError: ${e.type} ${e.message}');
@@ -66,10 +67,10 @@ class MaService {
         code: MaApiResponse.codeRequestError,
         message: 'DioError: ${e.type} ${e.message}',
       );
-    }
-
-    if (MaConfig.isLogApi) {
-      _logger.fine('response: ${response.statusCode} ${response.data}');
+    }finally{
+      if (MaConfig.isLogApi) {
+        _logger.fine('response: ${response.statusCode} ${response.data}');
+      }
     }
 
     if (response.statusCode == HttpStatus.ok) {
@@ -86,15 +87,22 @@ class MaService {
     }
   }
 
-  Future<MaApiResponse> get(String path, {Map<String, dynamic> data}) async {
-    return request('GET', path, data: data);
+  Future<MaApiResponse> get(String path, {Map<String, dynamic> data,
+    Map<String, dynamic> headers}) async {
+    return request('GET', path, data: data, headers: headers);
   }
 
-  Future<MaApiResponse> post(String path, {Map<String, dynamic> data}) async {
-    return request('POST', path, data: data);
+  Future<MaApiResponse> post(String path, {Map<String, dynamic> data,
+    Map<String, dynamic> headers}) async {
+    return request('POST', path, data: data, headers: headers);
   }
 
   Future<MaApiResponse> postForm(String path, {FormData data}) async {
     return request('POST', path, data: data);
+  }
+
+  Future<MaApiResponse> patch(String path, {Map<String, dynamic> data,
+    Map<String, dynamic> headers}) async {
+    return request('PATCH', path, data: data, headers: headers);
   }
 }

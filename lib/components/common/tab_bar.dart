@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../../pages/pages.dart';
 import '../../pages/home.dart';
 import '../../pages/discovery.dart';
-import '../../pages/me.dart';
+import '../../pages/notification.dart';
 import '../../pages/tab.dart';
+import '../../icons.dart';
 
 
 class MaTabBar extends StatelessWidget{
 
   static final tabs = [
-
     {
       'title' : Text("首页"),
       'icon' : Icon(Icons.home),
@@ -18,15 +18,14 @@ class MaTabBar extends StatelessWidget{
     },
     {
       'title' : Text("发现"),
-      'icon' : Icon(Icons.find_replace),
+      'icon' : Icon(MaIcon.search),
       'builder' : (BuildContext context) => DiscoveryPage(),
     },
     {
-      'title' : Text("我"),
-      'icon' : Icon(Icons.account_circle),
-      'builder' : (BuildContext context) => MePage(),
-    }
-
+      'title' : Text("通知"),
+      'icon' : Icon(MaIcon.message_notation),
+      'builder' : (BuildContext context) => NotificationPage(),
+    },
   ];
 
   final int tabIndex;

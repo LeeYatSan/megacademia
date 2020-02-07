@@ -175,7 +175,7 @@ ThunkAction<AppState> followUserAction({
 
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(FollowUserAction(
-          followerId: store.state.account.user.id,
+//          followerId: store.state.account.user.id,
           followingId: followingId,
         ));
         if (onSucceed != null) onSucceed();
@@ -198,7 +198,7 @@ ThunkAction<AppState> unfollowUserAction({
 
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(UnfollowUserAction(
-          followerId: store.state.account.user.id,
+//          followerId: store.state.account.user.id,
           followingId: followingId,
         ));
         if (onSucceed != null) onSucceed();

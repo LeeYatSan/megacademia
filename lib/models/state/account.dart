@@ -12,7 +12,8 @@ class AccountState {
 
   AccountState({
     UserEntity user,
-  }) : this.user = user ?? UserEntity();
+  }) : this.user = user ?? null;
+//  }) : this.user = user ?? UserEntity();
 
   factory AccountState.fromJson(Map<String, dynamic> json) =>
       _$AccountStateFromJson(json);

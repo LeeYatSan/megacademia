@@ -29,7 +29,6 @@ class MaApp extends StatelessWidget {
         routes: {
           '/': (context) => BootstrapPage(),
           '/login': (context) => LoginPage(),
-//          '/register': (context) => RegisterPage(),
           '/tab': (context) => TabPage(),
         },
       ),

@@ -14,7 +14,7 @@ AppState appReducer(AppState state, action) {
     );
   } else {
     return state.copyWith(
-      account: accountReducer(state.account, action),
+//      account: accountReducer(state.account, action),
       publish: publishReducer(state.publish, action),
       post: postReducer(state.post, action),
       user: userReducer(state.user, action),

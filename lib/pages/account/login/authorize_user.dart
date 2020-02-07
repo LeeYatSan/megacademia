@@ -3,7 +3,8 @@ import '../../../theme.dart';
 import '../../../config.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-import '../../../utils/app_navigate.dart';
+import '../../../components/common/app_navigate.dart';
+import '../../../meta.dart';
 
 
 class AuthorizeLogin extends StatelessWidget {
@@ -31,22 +32,7 @@ class AuthorizeLogin extends StatelessWidget {
       withZoom: true,
       withLocalStorage: true,
       clearCookies: true,
-      clearCache: true,
+//      clearCache: true,
     );
-
-//    return Scaffold(
-//      body: WebviewScaffold(
-//        url: url,
-//        appBar: AppBar(
-//          title: Text('Mastodon授权登录', style: TextStyle(color: Colors.white)),
-//          backgroundColor: MaTheme.maYellows,
-//        ),
-//        withZoom: true,
-//        withLocalStorage: true,
-//        clearCookies: true,
-//        clearCache: true,
-//      ),
-//      resizeToAvoidBottomPadding: false,
-//    );
   }
 }
