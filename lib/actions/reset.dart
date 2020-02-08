@@ -1,4 +1,5 @@
-class ResetStateAction {}
+class ResetStateAction {
+}
 
 class ResetPublishStateAction {
   ResetPublishStateAction();

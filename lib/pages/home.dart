@@ -170,36 +170,7 @@ class _BodyState extends State<_Body> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-//        FlatButton(
-//          child: Text('退出登录', style: TextStyle(color: Colors.white,
-//              fontWeight: FontWeight.w500),),
-//          color: Colors.redAccent,
-//          onPressed: (){
-//            print("LOGOUT");
-//            Navigator.of(context, rootNavigator: true)
-//                .pushReplacementNamed('/login');
-////            Navigator.of(context, rootNavigator: true).pushReplacementNamed('/login');
-//          },
-//        ),
-//        RefreshIndicator(
-//          onRefresh: _refresh,
-//          child:
-//          child: ListView.builder(
-//            controller: _scrollController,
-//            physics: const AlwaysScrollableScrollPhysics(),
-//            itemCount: widget.vm.postsFollowing.length,
-//            itemBuilder: (context, index) => Post(
-//              key: Key(widget.vm.postsFollowing[index].id.toString()),
-//              post: widget.vm.postsFollowing[index],
-//            ),
-//          ),
-//        ),
-//        Visibility(
-//          visible: _isLoading,
-//          child: Center(
-//            child: CircularProgressIndicator(),
-//          ),
-//        ),
+
       ],
     );
   }

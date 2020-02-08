@@ -9,11 +9,12 @@ part 'account.g.dart';
 @immutable
 class AccountState {
   final UserEntity user;
+  final String accessToken;
 
   AccountState({
     UserEntity user,
-  }) : this.user = user ?? null;
-//  }) : this.user = user ?? UserEntity();
+    this.accessToken = '',
+  }) :this.user = user ?? UserEntity();
 
   factory AccountState.fromJson(Map<String, dynamic> json) =>
       _$AccountStateFromJson(json);
@@ -22,8 +23,10 @@ class AccountState {
 
   AccountState copyWith({
     UserEntity user,
+    String accessToken,
   }) =>
       AccountState(
         user: user ?? this.user,
+        accessToken: accessToken ?? this.accessToken,
       );
 }

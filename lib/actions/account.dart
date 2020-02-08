@@ -2,101 +2,59 @@ import 'package:megacademia/config.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../factory.dart';
-import '../meta.dart';
 import '../models/models.dart';
 import '../services/services.dart';
 import 'reset.dart';
 
-//class AccountInfoAction {
-//  final UserEntity user;
-//
-//  AccountInfoAction({
-//    @required this.user,
-//  });
-//}
-//
-//ThunkAction<AppState> accountRegisterAction({
-//  @required RegisterForm form,
-//  void Function(UserEntity) onSucceed,
-//  void Function(NoticeEntity) onFailed,
-//}) =>
-//        (Store<AppState> store) async {
-//      final wgService = await MaFactory().getMaService();
-//      final response = await wgService.post(
-//        '/account/register',
-//        data: form.toJson(),
-//      );
-//
-//      if (response.code == MaApiResponse.codeOk) {
-//        final user = UserEntity.fromJson(response.data['user']);
-//        if (onSucceed != null) onSucceed(user);
-//      } else {
-//        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
-//      }
-//    };
-//
-//ThunkAction<AppState> accountLoginAction({
-//  @required LoginForm form,
-//  void Function(UserEntity) onSucceed,
-//  void Function(NoticeEntity) onFailed,
-//}) =>
-//        (Store<AppState> store) async {
-//      final wgService = await MaFactory().getMaService();
-//      final response = await wgService.post(
-//        '/account/login',
-//        data: form.toJson(),
-//      );
-//
-//      if (response.code == MaApiResponse.codeOk) {
-//        final user = UserEntity.fromJson(response.data['user']);
-//        store.dispatch(AccountInfoAction(user: user));
-//        if (onSucceed != null) onSucceed(user);
-//      } else {
-//        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
-//      }
-//    };
-//
-//ThunkAction<AppState> accountLogoutAction({
-//  void Function() onSucceed,
-//  void Function(NoticeEntity) onFailed,
-//}) =>
-//        (Store<AppState> store) async {
-//      final wgService = await MaFactory().getMaService();
-//      final response = await wgService.get('/account/logout');
-//
-//      if (response.code == MaApiResponse.codeOk) {
-//        store.dispatch(ResetStateAction());
-//        if (onSucceed != null) onSucceed();
-//      } else {
-//        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
-//      }
-//    };
+class AccountInfoAction {
+  final UserEntity user;
+
+  AccountInfoAction({
+    @required this.user,
+  });
+}
+
+class AccountAccessTokenAction {
+  final String accessToken;
+
+  AccountAccessTokenAction({
+    @required this.accessToken,
+  });
+}
+
+class ClientInfoAction {
+  final String clientId;
+  final String clientSecret;
+
+  ClientInfoAction({
+    @required this.clientId,
+    @required this.clientSecret,
+  });
+}
 
 // 获取账户信息
-ThunkAction<AppState> accountInfoAction({
+ThunkAction<AppState> clientInfoAction({
   void Function(String) onSucceed,
   void Function(NoticeEntity) onFailed,
 }) =>
         (Store<AppState> store) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       final maService = await MaFactory().getMaService();
 
       var response = await maService.post(MaApi.Apps, data: {
-        "client_name": MaGlobalValue.clientName,
+        "client_name": MaConfig.packageInfo.appName,
         "redirect_uris": MaGlobalValue.redirectUrl,
         "scopes": MaGlobalValue.scopes,
       });
 
       if (response.code == MaApiResponse.codeOk) {
-        MaMeta.clientId = response.data[MaGlobalValue.clientId];
-        MaMeta.clientSecret = response.data[MaGlobalValue.clientSecret];
-        prefs.setString(MaGlobalValue.clientId, MaMeta.clientId);
-        prefs.setString(MaGlobalValue.clientSecret, MaMeta.clientSecret);
 
-        if (onSucceed != null) onSucceed(MaMeta.clientId);
+        store.dispatch(ClientInfoAction(
+          clientId: response.data[MaGlobalValue.clientId],
+          clientSecret: response.data[MaGlobalValue.clientSecret],
+        ));
+        if (onSucceed != null) onSucceed(response.data[MaGlobalValue.clientId]);
       } else {
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
       }
@@ -109,15 +67,16 @@ ThunkAction<AppState> accountAccessTokenAction(bool grantType, {
   var code,
 }) =>
         (Store<AppState> store) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       final maService = await MaFactory().getMaService();
 
       const authorizationCode = 'authorization_code';
       const clientCredentials = 'client_credentials';
 
+      var state = store.state;
+
       var response = await maService.post(MaApi.Token, data: {
-        'client_id': MaMeta.clientId,
-        'client_secret':MaMeta.clientSecret,
+        'client_id': state.clientId,
+        'client_secret':state.clientSecret,
         'redirect_uri': MaGlobalValue.redirectUrl,
         'scope': MaGlobalValue.scopes,
         'grant_type': grantType ? authorizationCode : clientCredentials,
@@ -125,14 +84,16 @@ ThunkAction<AppState> accountAccessTokenAction(bool grantType, {
       });
 
       if (response.code == MaApiResponse.codeOk) {
-        MaMeta.userAccessToken = 'Bearer ${response.data[MaGlobalValue.accessToken]}';
-        prefs.setString(MaGlobalValue.accessToken, MaMeta.userAccessToken);
+
+        store.dispatch(AccountAccessTokenAction(
+          accessToken: 'Bearer ${response.data[MaGlobalValue.accessToken]}'
+        ));
+
         if (onSucceed != null) onSucceed();
       } else {
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
       }
     };
-
 
 // 验证令牌有效性
 ThunkAction<AppState> verifyAccessTokenAction(
@@ -150,8 +111,12 @@ ThunkAction<AppState> verifyAccessTokenAction(
 
       if (response.code == MaApiResponse.codeOk) {
         if(isUserLevel){
-          if (onAccountSucceed != null)
+          if (onAccountSucceed != null){
+            store.dispatch(AccountInfoAction(
+              user: UserEntity.fromJson(response.data)
+            ));
             onAccountSucceed(UserEntity.fromJson(response.data));
+          }
         }
         else{
           if (onClientSucceed != null) onClientSucceed();
@@ -160,6 +125,37 @@ ThunkAction<AppState> verifyAccessTokenAction(
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
       }
     };
+
+
+// 撤销令牌
+ThunkAction<AppState> revokeAccessTokenAction(
+    {
+      void Function() onSucceed,
+      void Function(NoticeEntity) onFailed,
+    }) =>
+        (Store<AppState> store) async {
+      final maService = await MaFactory().getMaService();
+      var state = store.state;
+
+      final accessToken = state.account.accessToken.split(' ')[1];
+
+      var response = await maService.post(MaApi.Revoke, data: {
+        'client_id': state.clientId,
+        'client_secret': state.clientSecret,
+        'token': accessToken,
+      });
+
+      if (response.code == MaApiResponse.codeOk) {
+        if (onSucceed != null){
+          store.dispatch(AccountAccessTokenAction(accessToken: ''));
+          store.dispatch(ResetStateAction);
+          onSucceed();
+        }
+      } else {
+        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
+      }
+    };
+
 
 ThunkAction<AppState> accountEditAction(
     final accessToken,
@@ -176,27 +172,25 @@ ThunkAction<AppState> accountEditAction(
         (Store<AppState> store) async {
       final wgService = await MaFactory().getMaService();
 
-      final _logger = MaFactory().getLogger('Maservice');
-      _logger.fine("access token: $accessToken");
-      _logger.fine("display_name: ${displayName ?? MaMeta.user.displayName}");
-      _logger.fine("discoverable: ${discoverable ?? true}");
-      _logger.fine("note: ${note ?? MaMeta.user.note}");
-      _logger.fine("locked: ${locked ?? MaMeta.user.locked}");
+      var state = store.state.account;
 
       final response = await wgService.patch(
         MaApi.UpdateAccount,
         headers: {'Authorization': accessToken},
         data: {
           'discoverable' : discoverable ?? true,
-          'display_name' : displayName ?? MaMeta.user.displayName,
+          'display_name' : displayName ?? state.user.displayName,
 //          'note' : note ?? MaMeta.user.note,
 //          'avatar' : avatar ?? MaMeta.user.avatar,
 //          'header' : header ?? MaMeta.user.header,
-          'locked' : locked ?? MaMeta.user.locked,
+          'locked' : locked ?? state.user.locked,
         },
       );
 
       if (response.code == MaApiResponse.codeOk) {
+        store.dispatch(AccountInfoAction(
+          user: UserEntity.fromJson(response.data),
+        ));
         if (onSucceed != null) onSucceed(UserEntity.fromJson(response.data));
       }
       else {

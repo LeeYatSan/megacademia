@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:megacademia/pages/drawer/setting.dart';
 
-import '../../meta.dart';
 import '../../theme.dart';
 import '../../icons.dart';
 import '../../components/common/app_navigate.dart';
+import '../../models/models.dart';
 
 class MaDrawer extends StatelessWidget{
 
@@ -80,82 +81,96 @@ class UserInfo extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return Container(
-      margin: EdgeInsets.only(left: 20.0, top: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: MaMeta.user.avatar == '' ? null
-                : NetworkImage(MaMeta.user.avatar),
-            child: MaMeta.user.avatar == '' ?
+    return StoreConnector<AppState, _ViewModel>(
+      converter: (store) => _ViewModel(
+        user: store.state.account.user,
+      ),
+      builder: (context, vm) => Container(
+        margin: EdgeInsets.only(left: 20.0, top: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CircleAvatar(
+              backgroundImage: vm.user.avatar == '' ? null
+                  : NetworkImage(vm.user.avatar),
+              child: vm.user.avatar == '' ?
               Image.asset('assets/images/missing.png') : null,
-            radius: 30.0,
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text(MaMeta.user.displayName, style: TextStyle(fontSize: 18.0,
-                        fontWeight: FontWeight.w700, color: Colors.black),
-                    ),
-                    Opacity(
-                      opacity: MaMeta.user.locked ? 1.0 : 0.0,
-                      child: Icon(Icons.lock, color: Colors.black, size: 18,),
-                    ),
-                  ],
-                ),
-                Text("@${MaMeta.user.username}", style: TextStyle(fontSize: 12.0,
-                    fontWeight: FontWeight.w300, color: Colors.black),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10.0),
-                  child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      GestureDetector(
-                        child: Row(
-                          children: <Widget>[
-                            Text(MaMeta.user.followingCount.toString(),
-                              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w700),),
-                            Text('关注',
-                              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),),
-                          ],
-                        ),
-                        onTap: (){
-                          print("Following");
-                          Navigator.pop(context);
-                        },
-                      ),
-                      Spacer(flex: 1,),
-                      GestureDetector(
-                        child: Row(
-                          children: <Widget>[
-                            Text(MaMeta.user.followersCount.toString(),
-                              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w700),),
-                            Text('粉丝',
-                              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),),
-                          ],
-                        ),
-                        onTap: (){
-                          print("Follower");
-                          Navigator.pop(context);
-                        },
-                      ),
-                      Spacer(flex: 8,),
-                    ],
-                  )
-                ),
-              ],
+              radius: 30.0,
             ),
-          ),
-        ],
+            Container(
+              margin: EdgeInsets.only(top: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text(vm.user.displayName, style: TextStyle(fontSize: 18.0,
+                          fontWeight: FontWeight.w700, color: Colors.black),
+                      ),
+                      Opacity(
+                        opacity: vm.user.locked ? 1.0 : 0.0,
+                        child: Icon(Icons.lock, color: Colors.black, size: 18,),
+                      ),
+                    ],
+                  ),
+                  Text("@${vm.user.username}", style: TextStyle(fontSize: 12.0,
+                      fontWeight: FontWeight.w300, color: Colors.black),
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            child: Row(
+                              children: <Widget>[
+                                Text(vm.user.followingCount.toString(),
+                                  style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w700),),
+                                Text('关注',
+                                  style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),),
+                              ],
+                            ),
+                            onTap: (){
+                              print("Following");
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Spacer(flex: 1,),
+                          GestureDetector(
+                            child: Row(
+                              children: <Widget>[
+                                Text(vm.user.followersCount.toString(),
+                                  style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w700),),
+                                Text('粉丝',
+                                  style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),),
+                              ],
+                            ),
+                            onTap: (){
+                              print("Follower");
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Spacer(flex: 8,),
+                        ],
+                      )
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+}
+
+
+class _ViewModel {
+  final UserEntity user;
+
+  _ViewModel({
+    @required this.user,
+  });
 }

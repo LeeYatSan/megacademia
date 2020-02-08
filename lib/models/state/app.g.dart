@@ -9,6 +9,8 @@ part of 'app.dart';
 AppState _$AppStateFromJson(Map<String, dynamic> json) {
   return AppState(
     version: json['version'] as String,
+    clientId: json['clientId'] as String,
+    clientSecret: json['clientSecret'] as String,
     account: json['account'] == null
         ? null
         : AccountState.fromJson(json['account'] as Map<String, dynamic>),
@@ -26,6 +28,8 @@ AppState _$AppStateFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
       'version': instance.version,
+      'clientId': instance.clientId,
+      'clientSecret': instance.clientSecret,
       'account': instance.account,
       'post': instance.post,
       'publish': instance.publish,

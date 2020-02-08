@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:megacademia/components/common/app_navigate.dart';
-import 'package:megacademia/icons.dart';
-import 'package:megacademia/meta.dart';
-import 'package:megacademia/pages/account/login/login.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../factory.dart';
 import '../../config.dart';
 import '../../theme.dart';
 import '../../models/models.dart';
@@ -62,135 +57,152 @@ class _BodyState extends State<_Body>{
   }
 
   void _logout() async{
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    print(MaMeta.user.toJson().toString());
-//    prefs.setString(MaGlobalValue.userInfo, MaMeta.user.toJson().toString());
-    Navigator.pushReplacementNamed(TabPage.globalKey.currentContext, '/login');
+    widget.store.dispatch(revokeAccessTokenAction(
+      onSucceed: (){
+        Navigator.pushReplacementNamed(TabPage.globalKey.currentContext, '/login');
+      },
+      onFailed: (notice){
+        createFailedSnackBar(context, notice);
+      }
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              height: 30,
-            ),
-            createMaListTile(context, Icons.lock, '锁定账户',
-              subTitle: '启用后其他用户需要通过你的确认才可关注你',
-              trailing: Switch(
-                value: MaMeta.user.locked,
-                activeColor: MaTheme.maYellows,
-                onChanged: (_changed){
-                  this.setState(() {
-                    MaMeta.user.locked = _changed;
-                    widget.store.dispatch(accountEditAction(
-                      MaMeta.userAccessToken,
-                      locked: _changed,
-                      onSucceed: (user){
-                        MaMeta.user = user;
-                      },
-                      onFailed: (notice){
-                        MaMeta.user.locked = !_changed;
-                        createFailedSnackBar(context, notice);
-                      }
-                    ));
-                  });
+    return StoreConnector<AppState, _ViewModel>(
+      converter: (store) => _ViewModel(
+        user: store.state.account.user,
+        accessToken: store.state.account.accessToken
+      ),
+      builder: (context, vm) =>Scaffold(
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                height: 30,
+              ),
+              createMaListTile(context, Icons.lock, '锁定账户',
+                subTitle: '启用后其他用户需要通过你的确认才可关注你',
+                trailing: Switch(
+                  value: vm.user.locked,
+                  activeColor: MaTheme.maYellows,
+                  onChanged: (_changed){
+                    this.setState(() {
+                      widget.store.dispatch(accountEditAction(
+                          vm.accessToken,
+                          locked: _changed,
+                          onSucceed: (user){
+                          },
+                          onFailed: (notice){
+                            createFailedSnackBar(context, notice);
+                          }
+                      ));
+                    });
+                  },
+                ),
+              ),
+              createMaListTile(context, Icons.vpn_key, '密码与登录安全',
+                subTitle: '管理账户密码、查看登录记录',
+                onTap: (){
+                  AppNavigate.push(
+                      context,
+                      WebviewScaffold(
+                        url: MaApi.AuthEdit,
+                        appBar: createAppBar(context, '密码与登录安全'),
+                        withZoom: true,
+                        withLocalStorage: true,
+                        clearCookies: true,
+                      )
+                  );
                 },
               ),
-            ),
-            createMaListTile(context, Icons.vpn_key, '密码与登录安全',
-              subTitle: '管理账户密码、查看登录记录',
-              onTap: (){
-                AppNavigate.push(
-                    context,
-                    WebviewScaffold(
-                      url: MaApi.AuthEdit,
-                      appBar: createAppBar(context, '密码与登录安全'),
-                      withZoom: true,
-                      withLocalStorage: true,
-                      clearCookies: true,
-                    )
-                );
-              },
-            ),
-            createMaListTile(context, Icons.more_horiz, '更多设置',
-              subTitle: '进入Mastodon WEB版后台设置更多特性',
-              onTap: (){
-                AppNavigate.push(
-                    context,
-                    WebviewScaffold(
-                      url: MaApi.MoreSetting,
-                      appBar: createAppBar(context, '更多设置'),
-                      withZoom: true,
-                      withLocalStorage: true,
-                      clearCookies: true,
-                    )
-                );
-              },
-            ),
-            createMaListTile(context, Icons.info_outline, '软件信息',
-              subTitle: '关于Megacademia',
-              onTap: (){
-              return showBottomSheet(
-                  context: context,
-                  builder: (BuildContext context){
-                    return Container(
-                      height: 400,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                            width: 50,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(4)),
-                              color: Colors.grey[300],
-                            ),
+              createMaListTile(context, Icons.more_horiz, '更多设置',
+                subTitle: '进入Mastodon WEB版后台设置更多特性',
+                onTap: (){
+                  AppNavigate.push(
+                      context,
+                      WebviewScaffold(
+                        url: MaApi.MoreSetting,
+                        appBar: createAppBar(context, '更多设置'),
+                        withZoom: true,
+                        withLocalStorage: true,
+                        clearCookies: true,
+                      )
+                  );
+                },
+              ),
+              createMaListTile(context, Icons.info_outline, '软件信息',
+                subTitle: '关于Megacademia',
+                onTap: (){
+                  return showBottomSheet(
+                      context: context,
+                      builder: (BuildContext context){
+                        return Container(
+                          height: 400,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                width: 50,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                                  color: Colors.grey[300],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(MaGlobalValue.about),
+                              )
+                            ],
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text(MaGlobalValue.about),
-                          )
-                        ],
-                      ),
-                    );
-                  });
-              },
-            ),
-            Container(
-                margin: EdgeInsets.only(top: 40.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Container(
+                        );
+                      });
+                },
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 40.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Container(
 //                padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                        margin: EdgeInsets.only(left: 60.0, right: 60.0),
-                        child: Text('退出登录', style: TextStyle(color: Colors.white,
-                            fontWeight: FontWeight.w500, letterSpacing: 5),),
-                      ),
-                      color: Colors.redAccent,
-                      onPressed: (){
-                        _logout();
-                      },
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Colors.white,
-                          width: 1,
+                          margin: EdgeInsets.only(left: 60.0, right: 60.0),
+                          child: Text('退出登录', style: TextStyle(color: Colors.white,
+                              fontWeight: FontWeight.w500, letterSpacing: 5),),
                         ),
-                        borderRadius: BorderRadiusDirectional.circular(20),
+                        color: Colors.redAccent,
+                        onPressed: (){
+                          _logout();
+                        },
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: Colors.white,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadiusDirectional.circular(20),
+                        ),
                       ),
-                    ),
-                  ],
-                )
-            ),
-          ],
+                    ],
+                  )
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+class _ViewModel {
+  final UserEntity user;
+  final String accessToken;
+
+  _ViewModel({
+    @required this.user,
+    @required this.accessToken,
+  });
 }

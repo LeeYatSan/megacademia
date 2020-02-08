@@ -3,68 +3,69 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
+@immutable
 @JsonSerializable()
 class UserEntity extends Object{
 
   @JsonKey(name: 'id')
-  String id;
+  final String id;
 
   @JsonKey(name: 'username')
-  String username;
+  final String username;
 
   @JsonKey(name: 'acct')
-  String acct;
+  final String acct;
 
   @JsonKey(name: 'display_name')
-  String displayName;
+  final String displayName;
 
   @JsonKey(name: 'locked')
-  bool locked;
+  final bool locked;
 
   @JsonKey(name: 'bot')
-  bool bot;
+  final bool bot;
 
   @JsonKey(name: 'created_at')
-  String createdAt;
+  final String createdAt;
 
   @JsonKey(name: 'note')
-  String note;
+  final String note;
 
   @JsonKey(name: 'url')
-  String url;
+  final String url;
 
   @JsonKey(name: 'avatar')
-  String avatar;
+  final String avatar;
 
   @JsonKey(name: 'avatar_static')
-  String avatarStatic;
+  final String avatarStatic;
 
   @JsonKey(name: 'header')
-  String header;
+  final String header;
 
   @JsonKey(name: 'header_static')
-  String headerStatic;
+  final String headerStatic;
 
   @JsonKey(name: 'followers_count')
-  int followersCount;
+  final int followersCount;
 
   @JsonKey(name: 'following_count')
-  int followingCount;
+  final int followingCount;
 
   @JsonKey(name: 'statuses_count')
-  int statusesCount;
+  final int statusesCount;
 
   @JsonKey(name: 'last_status_at')
-  String lastStatusAt;
+  final String lastStatusAt;
 
   @JsonKey(name: 'source')
-  Source source;
+  final Source source;
 
   @JsonKey(name: 'emojis')
-  List<dynamic> emojis;
+  final List<dynamic> emojis;
 
   @JsonKey(name: 'fields')
-  List<dynamic> fields;
+  final List<dynamic> fields;
 
   UserEntity({
     this.id = '',
@@ -84,9 +85,54 @@ class UserEntity extends Object{
     this.followingCount = 0,
     this.statusesCount = 0,
     this.lastStatusAt = '',
-  });
-//  UserEntity(this.id,this.username,this.acct,this.displayName,this.locked,this.bot,this.createdAt,this.note,this.url,this.avatar,this.avatarStatic,this.header,this.headerStatic,this.followersCount,this.followingCount,this.statusesCount,this.source,this.emojis,this.fields,);
+    Source source,
+    this.emojis = const[],
+    this.fields = const[],
+  }) : this.source =  source;
 
+  UserEntity copyWith({
+    String id,
+    String username,
+    String acct,
+    String displayName,
+    bool locked,
+    bool bot,
+    String createdAt,
+    String note,
+    String url,
+    String avatar,
+    String avatarStatic,
+    String header,
+    String headerStatic,
+    String followersCount,
+    String followingCount,
+    String statusesCount,
+    String lastStatusAt,
+    Source source,
+    List<dynamic> emojis,
+    List<dynamic> fields
+  }) =>
+      UserEntity(
+        id: id ?? this.id,
+        username: username ?? this.username,
+        acct: acct ?? this.acct,
+        displayName: displayName ?? this.displayName,
+        locked: locked ?? this.locked,
+        bot: bot ?? this.bot,
+        createdAt: createdAt ?? this.createdAt,
+        note: note ?? this.note,
+        url: url ?? this.url,
+        avatar: avatar ?? this.avatar,
+        avatarStatic: avatarStatic ?? this.avatarStatic,
+        header: header ?? this.header,
+        headerStatic: headerStatic ?? this.headerStatic,
+        followersCount: followersCount ?? this.followersCount,
+        followingCount: followingCount ?? this.followingCount,
+        lastStatusAt: lastStatusAt ?? this.lastStatusAt,
+        source: source ?? this.source,
+        emojis: emojis ?? this.emojis,
+        fields: fields ?? this.fields,
+      );
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>
       _$UserEntityFromJson(json);
@@ -94,35 +140,53 @@ class UserEntity extends Object{
   Map<String, dynamic> toJson() => _$UserEntityToJson(this);
 }
 
+@immutable
 @JsonSerializable()
 class Source extends Object{
 
   @JsonKey(name: 'privacy')
-  String privacy;
+  final String privacy;
 
   @JsonKey(name: 'sensitive')
-  bool sensitive;
+  final bool sensitive;
 
   @JsonKey(name: 'language')
-  String language;
+  final String language;
 
   @JsonKey(name: 'note')
-  String note;
+  final String note;
 
   @JsonKey(name: 'fields')
-  List<dynamic> fields;
+  final List<dynamic> fields;
 
   @JsonKey(name: 'follow_requests_count')
-  int followRequestsCount;
+  final int followRequestsCount;
 
   Source({
     this.privacy = 'public',
     this.sensitive = false,
     this.language = '',
     this.note = '',
+    this.fields = const [],
     this.followRequestsCount =  0
   });
-//  Source(this.privacy,this.sensitive,this.note,this.fields,);
+
+  Source copyWith({
+    String privacy,
+    bool sensitive,
+    String language,
+    String note,
+    List<dynamic> fields,
+    int followRequestsCount,
+  }) =>
+      Source(
+        privacy: privacy ?? this.privacy,
+        sensitive: sensitive ?? this.sensitive,
+        language: language?? this.language,
+        note: note ?? this.note,
+        fields: fields ?? this.fields,
+        followRequestsCount: followRequestsCount ?? this.followRequestsCount,
+      );
 
   factory Source.fromJson(Map<String, dynamic> json) =>
       _$SourceFromJson(json);
@@ -130,6 +194,7 @@ class Source extends Object{
   Map<String, dynamic> toJson() => _$SourceToJson(this);
 }
 
+@immutable
 @JsonSerializable()
 class Field extends Object{
 
@@ -147,7 +212,17 @@ class Field extends Object{
     this.value = '',
     this.verifiedAt = ''
   });
-//  Field(this.name,this.value,this.verifiedAt);
+
+  Field copyWith({
+    String name,
+    String value,
+    String verifiedAt,
+  }) =>
+      Field(
+        name: name ?? this.name,
+        value: value?? this.value,
+        verifiedAt: verifiedAt ?? this.verifiedAt,
+      );
 
   factory Field.fromJson(Map<String, dynamic> json) =>
       _$FieldFromJson(json);
@@ -155,6 +230,7 @@ class Field extends Object{
   Map<String, dynamic> toJson() => _$FieldToJson(this);
 }
 
+@immutable
 @JsonSerializable()
 class Emoji extends Object{
 
@@ -176,7 +252,19 @@ class Emoji extends Object{
     this.staticUrl = '',
     this.visibleInPicker = true
   });
-//  Emoji(this.shortcode,this.url,this.staticUrl,this.visibleInPicker,);
+
+  Emoji copyWith({
+    String shortcode,
+    String url,
+    String staticUrl,
+    bool visibleInPicker
+  }) =>
+      Emoji(
+        shortcode: shortcode ?? this.shortcode,
+        url: url ?? this.url,
+        staticUrl: staticUrl?? this.staticUrl,
+        visibleInPicker: visibleInPicker ?? this.visibleInPicker,
+      );
 
   factory Emoji.fromJson(Map<String, dynamic> json) =>
       _$EmojiFromJson(json);

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import '../../../theme.dart';
 import '../../../config.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import '../../../components/common/app_navigate.dart';
-import '../../../meta.dart';
-
+import '../../../models/models.dart';
 
 class AuthorizeLogin extends StatelessWidget {
   AuthorizeLogin({Key key}) : super(key: key);
 
-  String url = '${MaConfig.maApiBaseUrl}/oauth/authorize?scope=read%20write%20follow%20push&response_type=code&redirect_uri=${MaGlobalValue.redirectUrl}&client_id=${MaMeta.clientId}';
+  String url = '${MaConfig.maApiBaseUrl}/oauth/authorize?scope=read%20write%20follow%20push&response_type=code&redirect_uri=${MaGlobalValue.redirectUrl}&client_id=';
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +23,19 @@ class AuthorizeLogin extends StatelessWidget {
       }
     });
 
-    return WebviewScaffold(
-      url: url,
-      appBar: AppBar(
-        title: Text('Mastodon授权登录', style: TextStyle(color: Colors.white)),
-        backgroundColor: MaTheme.maYellows,
-      ),
-      withZoom: true,
-      withLocalStorage: true,
-      clearCookies: true,
+    return StoreConnector<AppState, String>(
+      converter: (store) => store.state.clientId,
+      builder: (context, clientId) => WebviewScaffold(
+        url: '$url$clientId',
+        appBar: AppBar(
+          title: Text('Mastodon授权登录', style: TextStyle(color: Colors.white)),
+          backgroundColor: MaTheme.maYellows,
+        ),
+        withZoom: true,
+        withLocalStorage: true,
+        clearCookies: true,
 //      clearCache: true,
+      ),
     );
   }
 }

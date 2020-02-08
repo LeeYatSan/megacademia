@@ -25,12 +25,12 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) {
     followingCount: json['following_count'] as int,
     statusesCount: json['statuses_count'] as int,
     lastStatusAt: json['last_status_at'] as String,
-  )
-    ..source = json['source'] == null
+    source: json['source'] == null
         ? null
-        : Source.fromJson(json['source'] as Map<String, dynamic>)
-    ..emojis = json['emojis'] as List
-    ..fields = json['fields'] as List;
+        : Source.fromJson(json['source'] as Map<String, dynamic>),
+    emojis: json['emojis'] as List,
+    fields: json['fields'] as List,
+  );
 }
 
 Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
@@ -63,8 +63,9 @@ Source _$SourceFromJson(Map<String, dynamic> json) {
     sensitive: json['sensitive'] as bool,
     language: json['language'] as String,
     note: json['note'] as String,
+    fields: json['fields'] as List,
     followRequestsCount: json['follow_requests_count'] as int,
-  )..fields = json['fields'] as List;
+  );
 }
 
 Map<String, dynamic> _$SourceToJson(Source instance) => <String, dynamic>{

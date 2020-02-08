@@ -5,7 +5,6 @@ import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../theme.dart';
 import '../../../config.dart';
@@ -13,7 +12,6 @@ import '../../../components/common/app_navigate.dart';
 import '../../../components/common/failed_snack_bar.dart';
 import 'authorize_user.dart';
 import '../../../factory.dart';
-import '../../../meta.dart';
 import '../../../models/models.dart';
 import 'register.dart';
 
@@ -47,7 +45,6 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body>{
-  final TextEditingController _controller = new TextEditingController();
   bool _clickButton = false;
   final _logger = MaFactory().getLogger('Maservice');
 
@@ -68,32 +65,27 @@ class _BodyState extends State<_Body>{
   }
 
   void _webAuthorize() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(MaMeta.clientId == null || MaMeta.clientId ==''){
-      MaMeta.clientId = prefs.get(MaGlobalValue.clientId);
-      MaMeta.clientSecret = prefs.get(MaGlobalValue.clientSecret);
-    }
     AppNavigate.push(context, AuthorizeLogin(), callBack: (code) {
       widget.store.dispatch(accountAccessTokenAction(
-        true,
-        onSucceed:(){
-          widget.store.dispatch(verifyAccessTokenAction(
-            true,
-            MaMeta.userAccessToken,
-            onAccountSucceed: (user){
-              MaMeta.user = user;
-              Navigator.of(context).pushReplacementNamed('/tab');
-              _logger.fine('access token: ${MaMeta.userAccessToken}');
-            },
-            onFailed: (notice){
-              createFailedSnackBar(context, notice);
-            },
-          ));
-        },
-        onFailed: (notice){
-          createFailedSnackBar(context, notice);
-        },
-        code: code
+          true,
+          onSucceed:(){
+            final  accessToken = widget.store.state.account.accessToken;
+            widget.store.dispatch(verifyAccessTokenAction(
+              true,
+              accessToken,
+              onAccountSucceed: (user){
+                Navigator.of(context).pushReplacementNamed('/tab');
+                _logger.fine('access token: $accessToken');
+              },
+              onFailed: (notice){
+                createFailedSnackBar(context, notice);
+              },
+            ));
+          },
+          onFailed: (notice){
+            createFailedSnackBar(context, notice);
+          },
+          code: code
       ));
     });
   }
@@ -224,7 +216,7 @@ class _BodyState extends State<_Body>{
                 Spacer(flex: 1),
                 Text('${MaConfig.domain}',
                     style: TextStyle(color: Colors.white, fontSize: 12)),
-                Text('Version: ${MaGlobalValue.clientVersion}',
+                Text('Version: ${MaConfig.packageInfo.version}',
                     style: TextStyle(color: Colors.white, fontSize: 8)),
                 Text(MaGlobalValue.copyRight,
                     style: TextStyle(color: Colors.white,fontSize: 6)),

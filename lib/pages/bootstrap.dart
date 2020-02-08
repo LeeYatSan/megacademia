@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:megacademia/config.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/models.dart';
 import '../actions/actions.dart';
 import '../theme.dart';
-import '../meta.dart';
-import '../factory.dart';
 
 class BootstrapPage extends StatelessWidget {
   BootstrapPage({
@@ -49,7 +45,7 @@ class _BodyState extends State<_Body>{
   }
 
   void _login(){
-    widget.store.dispatch(accountInfoAction(
+    widget.store.dispatch(clientInfoAction(
         onSucceed: (clientId){
           Navigator.of(context).pushReplacementNamed('/login');
         },
@@ -66,18 +62,13 @@ class _BodyState extends State<_Body>{
   }
 
   void _bootstrap() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    prefs.clear();
-    var accountAccessToken = prefs.get(MaGlobalValue.accessToken);
-    if(accountAccessToken != null){
+    var accountAccessToken = widget.store.state.account.accessToken;
+    print('access token: $accountAccessToken');
+    if(accountAccessToken != ''){
       widget.store.dispatch(verifyAccessTokenAction(
         true,
         accountAccessToken,
         onAccountSucceed: (user){
-          MaMeta.user = user;
-          MaMeta.userAccessToken = accountAccessToken;
-          MaMeta.clientSecret = prefs.get(MaGlobalValue.clientSecret);
-          MaMeta.userAccessToken = prefs.get(MaGlobalValue.accessToken);
           Navigator.of(context).pushReplacementNamed('/tab');
         },
         onFailed: (notice){

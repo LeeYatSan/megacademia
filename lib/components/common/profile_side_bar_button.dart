@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-
+import 'package:flutter_redux/flutter_redux.dart';
 
 import '../../factory.dart';
-import '../../meta.dart';
-import '../../config.dart';
+import '../../models/models.dart';
 
 class ProfileSideBarButtom extends StatelessWidget{
 
@@ -16,13 +14,26 @@ class ProfileSideBarButtom extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: CircleAvatar(
-          backgroundImage: MaMeta.user.avatar == '' ? null
-              : NetworkImage(MaMeta.user.avatar),
-          child: MaMeta.user.avatar == '' ?
+    return StoreConnector<AppState, _ViewModel>(
+      converter: (store) => _ViewModel(
+        user: store.state.account.user,
+      ),
+      builder: (context , vm) => Container(
+          child: CircleAvatar(
+            backgroundImage: vm.user.avatar == '' ? null
+                : NetworkImage(vm.user.avatar),
+            child: vm.user.avatar == '' ?
             Image.asset('assets/images/missing.png') : null,
-        )
+          )
+      ),
     );
   }
+}
+
+class _ViewModel {
+  final UserEntity user;
+
+  _ViewModel({
+    @required this.user,
+  });
 }
