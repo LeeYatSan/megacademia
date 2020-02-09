@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
 
-Widget createFailedSnackBar(BuildContext context, NoticeEntity notice){
+Widget createFailedSnackBar(BuildContext context, {NoticeEntity notice, String msg}){
   Scaffold.of(context).showSnackBar(SnackBar(
-    content: Text(notice.message),
+    content: Text(msg ?? notice.message),
     duration: notice.duration,
   ));
 }

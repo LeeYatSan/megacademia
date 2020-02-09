@@ -62,7 +62,7 @@ class _BodyState extends State<_Body>{
         Navigator.pushReplacementNamed(TabPage.globalKey.currentContext, '/login');
       },
       onFailed: (notice){
-        createFailedSnackBar(context, notice);
+        createFailedSnackBar(context, notice: notice);
       }
     ));
   }
@@ -90,12 +90,11 @@ class _BodyState extends State<_Body>{
                   onChanged: (_changed){
                     this.setState(() {
                       widget.store.dispatch(accountEditAction(
-                          vm.accessToken,
                           locked: _changed,
                           onSucceed: (user){
                           },
                           onFailed: (notice){
-                            createFailedSnackBar(context, notice);
+                            createFailedSnackBar(context, notice: notice);
                           }
                       ));
                     });

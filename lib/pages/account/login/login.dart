@@ -78,12 +78,12 @@ class _BodyState extends State<_Body>{
                 _logger.fine('access token: $accessToken');
               },
               onFailed: (notice){
-                createFailedSnackBar(context, notice);
+                createFailedSnackBar(context, notice: notice);
               },
             ));
           },
           onFailed: (notice){
-            createFailedSnackBar(context, notice);
+            createFailedSnackBar(context, notice: notice);
           },
           code: code
       ));

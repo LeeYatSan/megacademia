@@ -45,6 +45,7 @@ class MaApi {
   static String Notifications = '$maApiSubBaseUrl/notifications'; // 获取用户的通知信息
   static String PushNewTooT = '$maApiSubBaseUrl/statuses'; // 发送一个新文章
   static String UpdateAccount = '$maApiSubBaseUrl/accounts/update_credentials'; // 更新用户信息
+  static String Media = '$maApiSubBaseUrl/media'; // 媒体文件
   static String Following(arg) {
     return '$maApiSubBaseUrl/accounts/$arg/following';
   }  // 获取一个用户关注的用户

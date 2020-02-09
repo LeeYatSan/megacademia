@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:megacademia/pages/common/user_profile.dart';
 import 'package:megacademia/pages/drawer/setting.dart';
 
 import '../../theme.dart';
@@ -27,17 +28,25 @@ class MaDrawer extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          MaDrawerHeader(),
-          createMaListTile(context, MaIcon.me, '个人主页', Text('')),
-          createMaListTile(context, MaIcon.mute_user, '静默用户', Text('')),
-          createMaListTile(context, MaIcon.block_user, '黑名单', Text('')),
-          createMaListTile(context, MaIcon.collect, '收藏', Text('')),
-          createMaListTile(context, MaIcon.setting, '设置', SettingPage()),
-        ],
+    return StoreConnector<AppState, AccountState>(
+      converter: (store) => store.state.account,
+      builder: (context, accountState) => Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            MaDrawerHeader(),
+            createMaListTile(context, MaIcon.me, '个人主页',
+                UserProfilePage(
+                  user: accountState.user,
+                  accessToken: accountState.accessToken,
+                  isSelf: true,)
+            ),
+            createMaListTile(context, MaIcon.mute_user, '静默用户', Text('')),
+            createMaListTile(context, MaIcon.block_user, '黑名单', Text('')),
+            createMaListTile(context, MaIcon.collect, '收藏', Text('')),
+            createMaListTile(context, MaIcon.setting, '设置', SettingPage()),
+          ],
+        ),
       ),
     );
   }

@@ -1,7 +1,10 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:megacademia/config.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
+import 'package:path/path.dart';
 
 import '../factory.dart';
 import '../models/models.dart';
@@ -158,13 +161,10 @@ ThunkAction<AppState> revokeAccessTokenAction(
 
 
 ThunkAction<AppState> accountEditAction(
-    final accessToken,
     {
       var discoverable,
       var displayName,
       var note,
-      var avatar,
-      var header,
       bool locked,
       void Function(UserEntity) onSucceed,
       void Function(NoticeEntity) onFailed,
@@ -176,13 +176,11 @@ ThunkAction<AppState> accountEditAction(
 
       final response = await wgService.patch(
         MaApi.UpdateAccount,
-        headers: {'Authorization': accessToken},
+        headers: {'Authorization': state.accessToken},
         data: {
           'discoverable' : discoverable ?? true,
           'display_name' : displayName ?? state.user.displayName,
-//          'note' : note ?? MaMeta.user.note,
-//          'avatar' : avatar ?? MaMeta.user.avatar,
-//          'header' : header ?? MaMeta.user.header,
+//          'note' : note ?? state.user.note,
           'locked' : locked ?? state.user.locked,
         },
       );
@@ -197,6 +195,52 @@ ThunkAction<AppState> accountEditAction(
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
       }
     };
+
+ThunkAction<AppState> accountEditImageAction(
+    bool _isHeader,
+    var image,
+    {
+      void Function() onSucceed,
+      void Function(NoticeEntity) onFailed,
+    }) =>
+        (Store<AppState> store) async {
+      final wgService = await MaFactory().getMaService();
+
+      var state = store.state.account;
+
+      final type = _isHeader ? 'header' : 'avatar';
+
+      if(image == null) return;
+
+      var formData = FormData.fromMap({
+        type : MultipartFile.fromFileSync(image, filename: absolute(image))
+      });
+
+      //Dio 2.x
+//      var data = UploadFileInfo(File(image), absolute(image));
+//      FormData formData = new FormData.from({type : data});
+
+      print('access token: ${state.accessToken}');
+      print('$type: ${image ?? (_isHeader ? state.user.header : state.user.avatar)}');
+
+      final response = await wgService.patchForm(
+        MaApi.UpdateAccount,
+        headers: {'Authorization': state.accessToken,},
+        data: formData,
+      );
+      print('response: ${response.data}');
+
+      if (response.code == MaApiResponse.codeOk) {
+        store.dispatch(AccountInfoAction(
+          user: UserEntity.fromJson(response.data),
+        ));
+        if (onSucceed != null) onSucceed();
+      }
+      else {
+        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
+      }
+    };
+
 
 //ThunkAction<AppState> accountSendMobileVerifyCodeAction({
 //  @required String type,

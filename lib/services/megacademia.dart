@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -97,11 +98,17 @@ class MaService {
     return request('POST', path, data: data, headers: headers);
   }
 
-  Future<MaApiResponse> postForm(String path, {FormData data}) async {
-    return request('POST', path, data: data);
+  Future<MaApiResponse> postForm(String path, {FormData data,
+    Map<String, dynamic> headers}) async {
+    return request('POST', path, data: data, headers: headers);
   }
 
   Future<MaApiResponse> patch(String path, {Map<String, dynamic> data,
+    Map<String, dynamic> headers}) async {
+    return request('PATCH', path, data: data, headers: headers);
+  }
+
+  Future<MaApiResponse> patchForm(String path, {FormData data,
     Map<String, dynamic> headers}) async {
     return request('PATCH', path, data: data, headers: headers);
   }
