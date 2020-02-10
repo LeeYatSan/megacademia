@@ -4,7 +4,7 @@ import '../../icons.dart';
 import '../../theme.dart';
 
 
-AppBar createAppBar(BuildContext context, final title){
+AppBar createAppBar(BuildContext context, final title, {List<Widget> actions}){
   return AppBar(
     title: Text(title, style: TextStyle(fontWeight: FontWeight.w700)),
     leading: IconButton(
@@ -12,5 +12,6 @@ AppBar createAppBar(BuildContext context, final title){
       onPressed: () => Navigator.of(context).pop(),
     ),
     backgroundColor: Colors.white,
+    actions: actions,
   );
 }

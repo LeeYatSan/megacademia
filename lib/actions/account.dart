@@ -116,7 +116,7 @@ ThunkAction<AppState> verifyAccessTokenAction(
         if(isUserLevel){
           if (onAccountSucceed != null){
             store.dispatch(AccountInfoAction(
-              user: UserEntity.fromJson(response.data)
+              user: _noteTransform(response),
             ));
             onAccountSucceed(UserEntity.fromJson(response.data));
           }
@@ -180,14 +180,14 @@ ThunkAction<AppState> accountEditAction(
         data: {
           'discoverable' : discoverable ?? true,
           'display_name' : displayName ?? state.user.displayName,
-//          'note' : note ?? state.user.note,
+          'note' : note ?? state.user.note,
           'locked' : locked ?? state.user.locked,
         },
       );
 
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(AccountInfoAction(
-          user: UserEntity.fromJson(response.data),
+          user: _noteTransform(response),
         ));
         if (onSucceed != null) onSucceed(UserEntity.fromJson(response.data));
       }
@@ -195,6 +195,16 @@ ThunkAction<AppState> accountEditAction(
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
       }
     };
+
+UserEntity _noteTransform(var response){
+  UserEntity tmp = UserEntity.fromJson(response.data);
+  String note = tmp.note
+      .replaceAll(new RegExp(r"<br\s*/>"),'\n')
+      .replaceAll(new RegExp(r"\s*(<p>)|(</p>)|(<br>)"),'');
+  return tmp.copyWith(note: note);
+}
+
+
 
 ThunkAction<AppState> accountEditImageAction(
     bool _isHeader,
@@ -232,7 +242,7 @@ ThunkAction<AppState> accountEditImageAction(
 
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(AccountInfoAction(
-          user: UserEntity.fromJson(response.data),
+          user: _noteTransform(response),
         ));
         if (onSucceed != null) onSucceed();
       }

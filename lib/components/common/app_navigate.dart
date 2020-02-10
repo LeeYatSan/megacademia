@@ -8,7 +8,9 @@ class AppNavigate {
         builder: (BuildContext context) => scene,
       ),
     ).then((data) {
-      callBack(data);
+      if(callBack != null){
+        callBack(data);
+      }
     });
   }
   static pop(BuildContext context, {dynamic param}) {

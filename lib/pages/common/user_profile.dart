@@ -2,12 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:megacademia/actions/account.dart';
 import 'package:megacademia/components/common/failed_snack_bar.dart';
+import 'package:megacademia/pages/common/edit_user_info.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 import '../../components/common/app_bar.dart';
+import '../../components/common/app_navigate.dart';
 import '../../models/models.dart';
 import '../../icons.dart';
 import '../../theme.dart';
@@ -33,7 +34,7 @@ class UserProfilePage extends StatelessWidget {
       key: _scaffoldKey,
       appBar: createAppBar(context, '${user.displayName}的主页'),
       body: _Body(user, isSelf, key: _bodyKey,
-        store: StoreProvider.of<AppState>(context),
+      store: StoreProvider.of<AppState>(context),
       ),
     );
   }
@@ -51,7 +52,7 @@ class UserProfilePage extends StatelessWidget {
 
 class _Body extends StatefulWidget {
   final Store<AppState> store;
-  final UserEntity _user;
+  UserEntity _user;
   final bool _isSelf;
 
   _Body(
@@ -66,9 +67,9 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> {
-  var _isLoading = false;
-  final UserEntity _user;
+  UserEntity _user;
   final bool _isSelf;
+  var _isLoading = false;
   final _scrollController = ScrollController();
 
   _BodyState(this._user, this._isSelf);
@@ -80,84 +81,6 @@ class _BodyState extends State<_Body> {
 //    _loadPostsFollowing(recent: true, more: false);
   }
 
-//  @override
-//  Widget build(BuildContext context) {
-//    return Container(
-//      child: Column(
-//        children: <Widget>[
-//          Stack(
-//            children: <Widget>[
-//              Column(
-//                children: <Widget>[
-//                  Container(
-//                    child: FadeInImage.assetNetwork(
-//                      placeholder: 'assets/images/ma_header.png',
-//                      image: _user.header,
-//                      fit: BoxFit.cover,
-//                      width: double.infinity,
-//                    ),
-//                    height: 120.0,
-//                  ),
-//                  Container(
-//                    child: Column(
-//                      children: <Widget>[
-//                        Container(
-//                          height: 60.0,
-//                          padding: EdgeInsets.only(left: 160.0, top: 10.0, bottom: 10.0),
-//                          child: Row(
-//                            children: <Widget>[
-//                              Column(
-//                                crossAxisAlignment: CrossAxisAlignment.start,
-//                                children: <Widget>[
-//                                  Text('${_user.displayName}',
-//                                    style: TextStyle(
-//                                        fontWeight: FontWeight.w700,
-//                                        fontSize: 16.0),
-//                                  ),
-//                                  Text('@${_user.username}',
-//                                    style: TextStyle(
-//                                        fontWeight: FontWeight.w300,
-//                                        fontSize: 12.0),
-//                                  ),
-//                                ],
-//                              ),
-//                              _createButton(),
-//                            ],
-//                          ),
-//                        ),
-//                        Container(
-//                          width: double.infinity,
-//                          margin: EdgeInsets.only(left: 30.0, right:20.0,
-//                              top: 10.0, bottom: 30.0),
-//                          child: Text(_user.note,
-//                            style: TextStyle(fontSize: 12.0),),
-//                        ),
-//                        Divider(height: 1.0,indent: 0.0,color: Colors.grey),
-//                      ],
-//                    ),
-//                  )
-//                ],
-//              ),
-//              Container(
-//                margin: EdgeInsets.only(top: 60.0, left: 30.0),
-//                child: CircleAvatar(
-//                  radius: 60.0,
-//                  backgroundColor: Colors.white,
-//                  child: CircleAvatar(
-//                    backgroundImage: _user.avatar == '' ? null
-//                        : NetworkImage(_user.avatar),
-//                    child: _user.avatar == '' ?
-//                    Image.asset('assets/images/missing.png') : null,
-//                    radius: 55.0,
-//                  ),
-//                ),
-//              )
-//            ],
-//          )
-//        ],
-//      ),
-//    );
-//  }
 
   @override
   void dispose() {
@@ -245,7 +168,11 @@ class _BodyState extends State<_Body> {
         child:  GestureDetector(
           child: Icon(MaIcon.edit, color: Colors.grey,),
           onTap: (){
-            print('EDIT PROFILE');
+            AppNavigate.push(context, EditUserInfoPage(), callBack: (data){
+              setState(() {
+                _user = widget.store.state.account.user;
+              });
+            });
           },
         ),
       );
@@ -286,11 +213,13 @@ class _BodyState extends State<_Body> {
 
     var file = await ImagePicker.pickImage(source: source);
     if (file != null) {
-      print('上传一张图片${file.path}');
       widget.store.dispatch(accountEditImageAction(
         _isHeader, file.path,
         onSucceed: (){
-          print('图片上传成功');
+          build(context);
+          setState(() {
+            _user = widget.store.state.account.user;
+          });
         },
         onFailed: (notice){
           if(notice.message.contains('422'))
@@ -340,36 +269,63 @@ class _BodyState extends State<_Body> {
                         Container(
                           child: Column(
                             children: <Widget>[
-                              Container(
-                                height: 60.0,
-                                padding: EdgeInsets.only(left: 160.0, top: 10.0, bottom: 10.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                              Stack(
+                                children: <Widget>[
+                                  Container(
+                                    height: 60.0,
+                                    padding: EdgeInsets.only(left: 160.0, top: 10.0, bottom: 10.0),
+                                    child: Row(
                                       children: <Widget>[
-                                        Text('${_user.displayName}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 16.0),
-                                        ),
-                                        Text('@${_user.username}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 12.0),
+                                        Container(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text('${_user.displayName}',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 16.0),
+                                              ),
+                                              Text('@${_user.username}',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w300,
+                                                    fontSize: 12.0),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    _createButton(),
-                                  ],
-                                ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Container(
+                                      margin: EdgeInsets.only(top: 10.0, right: 10.0),
+                                      child: _createButton(),
+                                    ),
+                                  )
+                                ],
                               ),
                               Container(
                                 width: double.infinity,
                                 margin: EdgeInsets.only(left: 30.0, right:20.0,
-                                    top: 10.0, bottom: 30.0),
+                                    top: 10.0, bottom: 20.0),
                                 child: Text(_user.note,
                                   style: TextStyle(fontSize: 12.0),),
+                              ),
+//                              Divider(height: 1.0,indent: 0.0,color: Colors.black12),
+                              Container(
+                                height: 30.0,
+                                padding: EdgeInsets.only(left: 30.0, top: 5.0,
+                                    right: 30.0, bottom: 5.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Text('关注', style: TextStyle(fontWeight: FontWeight.w700),),
+                                    Text('${_user.followingCount}'),
+                                    Text('粉丝', style: TextStyle(fontWeight: FontWeight.w700),),
+                                    Text('${_user.followersCount}'),
+                                  ],
+                                )
                               ),
                               Divider(height: 1.0,indent: 0.0,color: Colors.black12),
                             ],

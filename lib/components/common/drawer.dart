@@ -94,6 +94,7 @@ class UserInfo extends StatelessWidget{
       converter: (store) => _ViewModel(
         user: store.state.account.user,
       ),
+      distinct: true,
       builder: (context, vm) => Container(
         margin: EdgeInsets.only(left: 20.0, top: 20.0),
         child: Column(
