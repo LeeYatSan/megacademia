@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
@@ -50,6 +51,7 @@ class MaService {
       String path, {
         dynamic data,
         dynamic headers,
+        Map<String, dynamic> queryParameters,
       }) async {
     if (MaConfig.isLogApi) {
       _logger.fine('request: $method ${MaConfig.maApiBaseUrl}$path');
@@ -60,6 +62,7 @@ class MaService {
       response = await _client.request(
         path,
         data: data,
+        queryParameters: queryParameters,
         options: Options(method: method, headers: headers),
       );
     } catch (e) {
@@ -75,11 +78,20 @@ class MaService {
     }
 
     if (response.statusCode == HttpStatus.ok) {
-      return MaApiResponse(
-        code: MaApiResponse.codeOk,
-        message: response.statusCode.toString(),
-        data: response.data
-      );
+      try{
+        return MaApiResponse(
+            code: MaApiResponse.codeOk,
+            message: response.statusCode.toString(),
+            data: response.data
+        );
+      }
+      catch(e){
+        return MaApiResponse(
+            code: MaApiResponse.codeOk,
+            message: response.statusCode.toString(),
+            data:{'' : response.data}
+        );
+      }
     } else {
       return MaApiResponse(
         code: MaApiResponse.codeResponseError,
@@ -89,8 +101,9 @@ class MaService {
   }
 
   Future<MaApiResponse> get(String path, {Map<String, dynamic> data,
-    Map<String, dynamic> headers}) async {
-    return request('GET', path, data: data, headers: headers);
+    Map<String, dynamic> headers, Map<String, dynamic> queryParameters}) async {
+    return request('GET', path, data: data, headers: headers,
+        queryParameters: queryParameters);
   }
 
   Future<MaApiResponse> post(String path, {Map<String, dynamic> data,

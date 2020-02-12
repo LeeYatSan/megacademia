@@ -8,21 +8,33 @@ part of 'user.dart';
 
 UserState _$UserStateFromJson(Map<String, dynamic> json) {
   return UserState(
-    users: (json['users'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : UserEntity.fromJson(e as Map<String, dynamic>)),
-    ),
-    usersFollowing: (json['usersFollowing'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
-    ),
-    followers: (json['followers'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
-    ),
+    followingUsers: (json['followingUsers'] as List)
+        ?.map((e) =>
+            e == null ? null : UserEntity.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    followers: (json['followers'] as List)
+        ?.map((e) =>
+            e == null ? null : UserEntity.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    muteUsers: (json['muteUsers'] as List)
+        ?.map((e) =>
+            e == null ? null : UserEntity.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    blockedUsers: (json['blockedUsers'] as List)
+        ?.map((e) =>
+            e == null ? null : UserEntity.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    currRelationship: json['currRelationship'] == null
+        ? null
+        : RelationshipEntity.fromJson(
+            json['currRelationship'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$UserStateToJson(UserState instance) => <String, dynamic>{
-      'users': instance.users,
-      'usersFollowing': instance.usersFollowing,
+      'followingUsers': instance.followingUsers,
       'followers': instance.followers,
+      'muteUsers': instance.muteUsers,
+      'blockedUsers': instance.blockedUsers,
+      'currRelationship': instance.currRelationship,
     };

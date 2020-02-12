@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:megacademia/actions/account.dart';
 import 'package:megacademia/components/common/failed_snack_bar.dart';
+import 'package:megacademia/components/common/user_tile.dart';
+import 'package:megacademia/models/entity/relationship.dart';
 import 'package:megacademia/pages/common/edit_user_info.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -9,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../components/common/app_bar.dart';
 import '../../components/common/app_navigate.dart';
+import '../../components/common/failed_snack_bar.dart';
 import '../../models/models.dart';
 import '../../icons.dart';
 import '../../theme.dart';
@@ -32,23 +35,14 @@ class UserProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: createAppBar(context, '${user.displayName}的主页'),
+      appBar: createAppBar(context,
+          '${user.displayName == '' ? user.username : user.displayName}的主页'),
       body: _Body(user, isSelf, key: _bodyKey,
-      store: StoreProvider.of<AppState>(context),
+        store: StoreProvider.of<AppState>(context),
       ),
     );
   }
 }
-
-//class _ViewModel {
-////  final List<PostEntity> postsFollowing;
-//  final UserEntity user;
-//
-//  _ViewModel({
-////    @required this.postsFollowing,
-//    @required this.user,
-//  });
-//}
 
 class _Body extends StatefulWidget {
   final Store<AppState> store;
@@ -63,17 +57,19 @@ class _Body extends StatefulWidget {
       : super(key: key);
 
   @override
-  _BodyState createState() => _BodyState(_user, _isSelf);
+  _BodyState createState() =>
+      _BodyState(_user, _isSelf, store.state.user.currRelationship);
 }
 
 class _BodyState extends State<_Body> {
   UserEntity _user;
   final bool _isSelf;
+  RelationshipEntity relationship;
   var _isLoading = false;
   final _scrollController = ScrollController();
 
-  _BodyState(this._user, this._isSelf);
-
+  _BodyState(this._user, this._isSelf, this.relationship){
+  }
   @override
   void initState() {
     super.initState();
@@ -161,24 +157,140 @@ class _BodyState extends State<_Body> {
     return completer.future;
   }
 
-  Widget _createButton(){
+  Widget _createButton(UserEntity user){
     if(_isSelf){
       return Container(
-        padding: EdgeInsets.only(left: 80.0, right: 30.0),
-        child:  GestureDetector(
-          child: Icon(MaIcon.edit, color: Colors.grey,),
-          onTap: (){
+        width: 20.0,
+        height: 20.0,
+        margin: EdgeInsets.only(left: 2.5, right: 2.5),
+        child: OutlineButton(
+          padding: EdgeInsets.all(0.0),
+          highlightColor: Colors.white,
+          child: Icon(MaIcon.edit, color: MaTheme.maYellows, size: 15.0,),
+          shape: CircleBorder(),
+          borderSide: BorderSide(color: MaTheme.maYellows),
+          onPressed: (){
             AppNavigate.push(context, EditUserInfoPage(), callBack: (data){
               setState(() {
                 _user = widget.store.state.account.user;
               });
             });
           },
-        ),
+        )
       );
     }
     else{
-
+      return Container(
+          width: 70.0,
+          height: 20.0,
+          padding: EdgeInsets.all(0.0),
+          margin: EdgeInsets.only(left: 2.5, right: 2.5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                  width: 20.0,
+                  height: 20.0,
+                  margin: EdgeInsets.only(left: 2.5, right: 2.5),
+                  child: OutlineButton(
+                    padding: EdgeInsets.all(0.0),
+                    highlightColor: Colors.white,
+                    child: PopupMenuButton<int>(
+                      child: Icon(Icons.more_horiz, color: MaTheme.maYellows, size: 15.0,),
+                      onSelected: (int value){
+                        switch(value){
+                          case 0:{
+                            if(relationship.muting){
+                              unmuteUser(context, user);
+                              setState(() {
+                                relationship = relationship.copyWith(muting: false);
+                              });
+                            }
+                            else{
+                              muteUser(context, user);
+                              setState(() {
+                                relationship = relationship.copyWith(muting: true);
+                              });
+                            }
+                          }break;
+                          case 1:{
+                            if(relationship.blocking){
+                              unblockUser(context, user);
+                              setState(() {
+                                relationship = relationship.copyWith(blocking: false);
+                              });
+                            }
+                            else{
+                              blockUser(context, user);
+                              setState(() {
+                                relationship = relationship.copyWith(blocking: true);
+                              });
+                            }
+                          }break;
+                        }
+                        print("mute: ${relationship.muting}");
+                      },
+                      itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+                        PopupMenuItem<int>(
+                          value: 0,
+                          child: ListTile(
+                            leading: Icon(MaIcon.mute_user, color: MaTheme.maYellows, size: 20.0,),
+                            title: Text((relationship.muting ? '取消静默' : '加入静默名单'),
+                              style: TextStyle(fontSize: 13.0),),
+                          ),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 1,
+                          child: ListTile(
+                            leading: Icon(MaIcon.block_user, color: MaTheme.maYellows, size: 20.0,),
+                            title: Text((relationship.blocking ? '取消拉黑' : '加入黑名单'),
+                              style: TextStyle(fontSize: 13.0),),
+                          ),
+                        ),
+                      ],
+                    ),
+                    shape: CircleBorder(),
+                    borderSide: BorderSide(color: MaTheme.maYellows),
+                    onPressed: (){
+                      print('more');
+                    },
+                  )
+              ),
+              Container(
+                  width:40.0,
+                  height: 20.0,
+                  margin: EdgeInsets.only(left: 2.5, right: 2.5),
+                  child: (relationship.following ?
+                    FlatButton(
+                      padding: EdgeInsets.all(0.0),
+                      color: MaTheme.maYellows,
+                      highlightColor: Colors.white,
+                      child: Text('已关注', style: TextStyle(color: Colors.white, fontSize: 10.0),),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      onPressed: (){
+                        print('已关注');
+                      },
+                    ) :
+                    OutlineButton(
+                      padding: EdgeInsets.all(0.0),
+                      highlightColor: Colors.white,
+                      child: Text('关注', style: TextStyle(color: MaTheme.maYellows, fontSize: 10.0),),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      borderSide: BorderSide(color: MaTheme.maYellows),
+                      onPressed: (){
+                        print('关注');
+                      },
+                    )
+                  ),
+              ),
+            ],
+          )
+      );
     }
   }
 
@@ -248,7 +360,7 @@ class _BodyState extends State<_Body> {
                             children: <Widget>[
                               Container(
                                 child: Image.asset('assets/images/ma_header.png',
-                                fit: BoxFit.cover, width: double.infinity,),
+                                  fit: BoxFit.cover, width: double.infinity,),
                                 height: 120.0,
                               ),
                               Container(
@@ -263,47 +375,47 @@ class _BodyState extends State<_Body> {
                             ],
                           ),
                           onTap: (){
-                            _addFile(true);
+                            if(_isSelf)
+                              _addFile(true);
                           },
                         ),
                         Container(
                           child: Column(
                             children: <Widget>[
-                              Stack(
-                                children: <Widget>[
-                                  Container(
-                                    height: 60.0,
-                                    padding: EdgeInsets.only(left: 160.0, top: 10.0, bottom: 10.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Container(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text('${_user.displayName}',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 16.0),
-                                              ),
-                                              Text('@${_user.username}',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-                                                    fontSize: 12.0),
-                                              ),
-                                            ],
+                              Container(
+                                padding: EdgeInsets.only(left: 160.0, top: 10.0, bottom: 10.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text('${_user.displayName == '' ?
+                                            _user.username : _user.displayName}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 16.0),
                                           ),
-                                        ),
-                                      ],
+                                          Text('@${_user.username}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: 12.0),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Container(
-                                      margin: EdgeInsets.only(top: 10.0, right: 10.0),
-                                      child: _createButton(),
+                                    Container(
+                                      margin: EdgeInsets.only(left: 5.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          _createButton(_user),
+                                        ],
+                                      ),
                                     ),
-                                  )
-                                ],
+                                  ],
+                                ),
                               ),
                               Container(
                                 width: double.infinity,
@@ -314,18 +426,18 @@ class _BodyState extends State<_Body> {
                               ),
 //                              Divider(height: 1.0,indent: 0.0,color: Colors.black12),
                               Container(
-                                height: 30.0,
-                                padding: EdgeInsets.only(left: 30.0, top: 5.0,
-                                    right: 30.0, bottom: 5.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    Text('关注', style: TextStyle(fontWeight: FontWeight.w700),),
-                                    Text('${_user.followingCount}'),
-                                    Text('粉丝', style: TextStyle(fontWeight: FontWeight.w700),),
-                                    Text('${_user.followersCount}'),
-                                  ],
-                                )
+                                  height: 30.0,
+                                  padding: EdgeInsets.only(left: 30.0, top: 5.0,
+                                      right: 30.0, bottom: 5.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Text('关注', style: TextStyle(fontWeight: FontWeight.w700),),
+                                      Text('${_user.followingCount}'),
+                                      Text('粉丝', style: TextStyle(fontWeight: FontWeight.w700),),
+                                      Text('${_user.followersCount}'),
+                                    ],
+                                  )
                               ),
                               Divider(height: 1.0,indent: 0.0,color: Colors.black12),
                             ],
@@ -348,7 +460,8 @@ class _BodyState extends State<_Body> {
                           ),
                         ),
                         onTap: (){
-                          _addFile(false);
+                          if(_isSelf)
+                            _addFile(false);
                         },
                       ),
                     )

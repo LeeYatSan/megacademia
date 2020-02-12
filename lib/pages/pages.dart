@@ -19,3 +19,5 @@ export 'account/login/login.dart';
 //export 'user/user.dart';
 //export 'user/users_following.dart';
 export 'drawer/setting.dart';
+export 'drawer/mute_user.dart';
+export 'drawer/block_user.dart';

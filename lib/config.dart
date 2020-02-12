@@ -46,6 +46,10 @@ class MaApi {
   static String PushNewTooT = '$maApiSubBaseUrl/statuses'; // 发送一个新文章
   static String UpdateAccount = '$maApiSubBaseUrl/accounts/update_credentials'; // 更新用户信息
   static String Media = '$maApiSubBaseUrl/media'; // 媒体文件
+  static String MuteList = '$maApiSubBaseUrl/mutes'; // 获取静默用户列表
+  static String BlockList = '$maApiSubBaseUrl/blocks'; // 获取黑名单
+  static String Account = '$maApiSubBaseUrl/accounts'; // 设置/获取某用户信息
+  static String Relationship = '$maApiSubBaseUrl/accounts/relationships'; // 获取关系
   static String Following(arg) {
     return '$maApiSubBaseUrl/accounts/$arg/following';
   }  // 获取一个用户关注的用户
@@ -62,7 +66,6 @@ class MaApi {
   static String UnFollow(arg) {
     return '$maApiSubBaseUrl/accounts/$arg/unfollow';
   } // 取关某人
-  static String Relationships = '$maApiSubBaseUrl/accounts/relationships'; // 查看与某人的关注或者被关注情况
   static String CustomEmojis = '$maApiSubBaseUrl/custom_emojis'; // 该节点的emojis
   static String FavouritesArticle(arg) {
     return '$maApiSubBaseUrl/statuses/$arg/favourite'; // 收藏某个文章

@@ -271,3 +271,21 @@ class Emoji extends Object{
 
   Map<String, dynamic> toJson() => _$EmojiToJson(this);
 }
+
+
+
+@JsonSerializable()
+@immutable
+class UserListEntity {
+  @JsonKey(name: '')
+  final List<UserEntity> users;
+
+  const UserListEntity({
+    this.users = const[]
+  });
+
+  factory UserListEntity.fromJson(Map<String, dynamic> json)=>
+      _$UserListEntityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserListEntityToJson(this);
+}

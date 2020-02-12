@@ -106,3 +106,17 @@ Map<String, dynamic> _$EmojiToJson(Emoji instance) => <String, dynamic>{
       'static_url': instance.staticUrl,
       'visible_in_picker': instance.visibleInPicker,
     };
+
+UserListEntity _$UserListEntityFromJson(Map<String, dynamic> json) {
+  return UserListEntity(
+    users: (json[''] as List)
+        ?.map((e) =>
+            e == null ? null : UserEntity.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$UserListEntityToJson(UserListEntity instance) =>
+    <String, dynamic>{
+      '': instance.users,
+    };

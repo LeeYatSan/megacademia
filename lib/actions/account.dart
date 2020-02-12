@@ -10,6 +10,7 @@ import '../factory.dart';
 import '../models/models.dart';
 import '../services/services.dart';
 import 'reset.dart';
+import 'utils.dart';
 
 class AccountInfoAction {
   final UserEntity user;
@@ -116,7 +117,7 @@ ThunkAction<AppState> verifyAccessTokenAction(
         if(isUserLevel){
           if (onAccountSucceed != null){
             store.dispatch(AccountInfoAction(
-              user: _noteTransform(response),
+              user: noteTransform(response),
             ));
             onAccountSucceed(UserEntity.fromJson(response.data));
           }
@@ -187,7 +188,7 @@ ThunkAction<AppState> accountEditAction(
 
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(AccountInfoAction(
-          user: _noteTransform(response),
+          user: noteTransform(response),
         ));
         if (onSucceed != null) onSucceed(UserEntity.fromJson(response.data));
       }
@@ -196,13 +197,13 @@ ThunkAction<AppState> accountEditAction(
       }
     };
 
-UserEntity _noteTransform(var response){
-  UserEntity tmp = UserEntity.fromJson(response.data);
-  String note = tmp.note
-      .replaceAll(new RegExp(r"<br\s*/>"),'\n')
-      .replaceAll(new RegExp(r"\s*(<p>)|(</p>)|(<br>)"),'');
-  return tmp.copyWith(note: note);
-}
+//UserEntity _noteTransform(var response){
+//  UserEntity tmp = UserEntity.fromJson(response.data);
+//  String note = tmp.note
+//      .replaceAll(new RegExp(r"<br\s*/>"),'\n')
+//      .replaceAll(new RegExp(r"\s*(<p>)|(</p>)|(<br>)"),'');
+//  return tmp.copyWith(note: note);
+//}
 
 
 
@@ -238,11 +239,9 @@ ThunkAction<AppState> accountEditImageAction(
         headers: {'Authorization': state.accessToken,},
         data: formData,
       );
-      print('response: ${response.data}');
-
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(AccountInfoAction(
-          user: _noteTransform(response),
+          user: noteTransform(response),
         ));
         if (onSucceed != null) onSucceed();
       }

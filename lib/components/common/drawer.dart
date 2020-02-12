@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:megacademia/pages/common/user_profile.dart';
+import 'package:megacademia/pages/drawer/block_user.dart';
+import 'package:megacademia/pages/drawer/mute_user.dart';
 import 'package:megacademia/pages/drawer/setting.dart';
 
 import '../../theme.dart';
@@ -37,12 +39,12 @@ class MaDrawer extends StatelessWidget{
             MaDrawerHeader(),
             createMaListTile(context, MaIcon.me, '个人主页',
                 UserProfilePage(
+                  isSelf: true,
                   user: accountState.user,
-                  accessToken: accountState.accessToken,
-                  isSelf: true,)
+                  accessToken: accountState.accessToken,)
             ),
-            createMaListTile(context, MaIcon.mute_user, '静默用户', Text('')),
-            createMaListTile(context, MaIcon.block_user, '黑名单', Text('')),
+            createMaListTile(context, MaIcon.mute_user, '静默用户', MuteUserPage()),
+            createMaListTile(context, MaIcon.block_user, '黑名单', BlockUserPage()),
             createMaListTile(context, MaIcon.collect, '收藏', Text('')),
             createMaListTile(context, MaIcon.setting, '设置', SettingPage()),
           ],
