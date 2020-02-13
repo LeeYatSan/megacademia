@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:megacademia/actions/account.dart';
+import 'package:megacademia/actions/actions.dart';
 import 'package:megacademia/components/common/failed_snack_bar.dart';
 import 'package:megacademia/components/common/user_tile.dart';
 import 'package:megacademia/models/entity/relationship.dart';
@@ -15,6 +16,7 @@ import '../../components/common/failed_snack_bar.dart';
 import '../../models/models.dart';
 import '../../icons.dart';
 import '../../theme.dart';
+import '../../pages/pages.dart';
 
 class UserProfilePage extends StatelessWidget {
 
@@ -271,7 +273,10 @@ class _BodyState extends State<_Body> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       onPressed: (){
-                        print('已关注');
+                        unfollowUser(context, user);
+                        setState(() {
+                          relationship = relationship.copyWith(following: false);
+                        });
                       },
                     ) :
                     OutlineButton(
@@ -283,7 +288,10 @@ class _BodyState extends State<_Body> {
                       ),
                       borderSide: BorderSide(color: MaTheme.maYellows),
                       onPressed: (){
-                        print('关注');
+                        followUser(context, user);
+                        setState(() {
+                          relationship = relationship.copyWith(following: true);
+                        });
                       },
                     )
                   ),
@@ -391,11 +399,16 @@ class _BodyState extends State<_Body> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
-                                          Text('${_user.displayName == '' ?
-                                            _user.username : _user.displayName}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 16.0),
+                                          Row(
+                                            children: <Widget>[
+                                              Text(_user.displayName, style: TextStyle(fontSize: 16.0,
+                                                  fontWeight: FontWeight.w700, color: Colors.black),
+                                              ),
+                                              Opacity(
+                                                opacity: _user.locked ? 1.0 : 0.0,
+                                                child: Icon(Icons.lock, color: MaTheme.maYellows, size: 16,),
+                                              ),
+                                            ],
                                           ),
                                           Text('@${_user.username}',
                                             style: TextStyle(
@@ -432,10 +445,38 @@ class _BodyState extends State<_Body> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
-                                      Text('关注', style: TextStyle(fontWeight: FontWeight.w700),),
-                                      Text('${_user.followingCount}'),
-                                      Text('粉丝', style: TextStyle(fontWeight: FontWeight.w700),),
-                                      Text('${_user.followersCount}'),
+                                      GestureDetector(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text('关注  ', style: TextStyle(fontWeight: FontWeight.w700),),
+                                            Text('${_user.followingCount}'),
+                                          ],
+                                        ),
+                                        onTap: (){
+                                          if(_user.id == widget.store.state.account.user.id){
+                                            AppNavigate.push(context, FollowingPage());
+                                          }
+                                          else{
+                                            createFailedSnackBar(context, msg: '暂时无法查看该用户的关注列表！');
+                                          }
+                                        },
+                                      ),
+                                      GestureDetector(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text('粉丝  ', style: TextStyle(fontWeight: FontWeight.w700),),
+                                            Text('${_user.followersCount}'),
+                                          ],
+                                        ),
+                                        onTap: (){
+                                          if(_user.id == widget.store.state.account.user.id){
+                                            AppNavigate.push(context, FollowerPage());
+                                          }
+                                          else{
+                                            createFailedSnackBar(context, msg: '暂时无法查看该用户的粉丝列表！');
+                                          }
+                                        },
+                                      )
                                     ],
                                   )
                               ),

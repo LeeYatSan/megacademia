@@ -17,7 +17,7 @@ class BlockUserPage extends StatelessWidget {
       converter: (store) => store.state.account.user,
       builder: (context, user) => Scaffold(
         appBar: createAppBar(context, '黑名单'),
-        body: UserList(type: 3, user: user,),
+        body: UserList(type: 3, user: user),
       ),
     );
   }

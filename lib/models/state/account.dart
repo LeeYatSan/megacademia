@@ -24,6 +24,7 @@ class AccountState {
   AccountState copyWith({
     UserEntity user,
     String accessToken,
+    String appAccessToken,
   }) =>
       AccountState(
         user: user ?? this.user,

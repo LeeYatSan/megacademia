@@ -11,6 +11,7 @@ import 'user_tile.dart';
 
 class UserList extends StatefulWidget {
   final int type; // 0->usersFollowing 1->followers 2->muteUsers 3->blockedUsers
+
   UserEntity user;
 
   UserList({
@@ -24,8 +25,8 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  static final _bodyKey = GlobalKey<_BodyState>();
-  final _type;
+  final _bodyKey = GlobalKey<_BodyState>();
+  final int _type;
   UserEntity _user;
 
   _UserListState(this._type, this._user);
@@ -34,7 +35,7 @@ class _UserListState extends State<UserList> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       converter: (store) => _ViewModel(
-        user: _user,
+        user: store.state.account.user,
         targetList: _getTargetList(store.state),
       ),
       builder: (context, vm) => Scaffold(
@@ -82,24 +83,27 @@ class _Body extends StatefulWidget {
   final Store<AppState> store;
   final _ViewModel vm;
   final type;
+  final isSelf;
 
   _Body({
     Key key,
     @required this.store,
     @required this.vm,
     @required this.type,
+    @required this.isSelf,
   }) : super(key: key);
 
   @override
-  _BodyState createState() => _BodyState(type);
+  _BodyState createState() => _BodyState(type, isSelf);
 }
 
 class _BodyState extends State<_Body> {
   final _scrollController = ScrollController();
   var _isLoading = false;
   final _type;
+  final _isSelf;
 
-  _BodyState(this._type);
+  _BodyState(this._type, this._isSelf);
 
   @override
   void initState() {
@@ -170,12 +174,58 @@ class _BodyState extends State<_Body> {
 
   void _loadFolloweringUsers(String id, int offset,
       bool refresh, Completer<Null> completer){
+    widget.store.dispatch(getFollowingListAction(
+      userId: widget.vm.user.id,
+      offset: offset,
+      refresh: refresh,
+      onSucceed: (posts) {
+        if (!refresh) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        completer?.complete();
+      },
+      onFailed: (notice) {
+        if (!refresh) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
 
+        completer?.complete();
+
+        createFailedSnackBar(context, notice: notice);
+      },
+    ));
   }
 
   void _loadFollowers(String id, int offset,
       bool refresh, Completer<Null> completer){
+    widget.store.dispatch(getFollowersListAction(
+      userId: widget.vm.user.id,
+      offset: offset,
+      refresh: refresh,
+      onSucceed: (posts) {
+        if (!refresh) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        completer?.complete();
+      },
+      onFailed: (notice) {
+        if (!refresh) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
 
+        completer?.complete();
+
+        createFailedSnackBar(context, notice: notice);
+      },
+    ));
   }
 
   void _loadMuteUsers(String id, int offset,

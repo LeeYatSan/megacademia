@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:megacademia/pages/common/user_profile.dart';
 import 'package:megacademia/pages/drawer/block_user.dart';
+import 'package:megacademia/pages/drawer/follower.dart';
+import 'package:megacademia/pages/drawer/following.dart';
 import 'package:megacademia/pages/drawer/mute_user.dart';
 import 'package:megacademia/pages/drawer/setting.dart';
 
@@ -95,6 +97,7 @@ class UserInfo extends StatelessWidget{
     return StoreConnector<AppState, _ViewModel>(
       converter: (store) => _ViewModel(
         user: store.state.account.user,
+        accountState: store.state.account,
       ),
       distinct: true,
       builder: (context, vm) => Container(
@@ -103,12 +106,23 @@ class UserInfo extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            CircleAvatar(
-              backgroundImage: vm.user.avatar == '' ? null
-                  : NetworkImage(vm.user.avatar),
-              child: vm.user.avatar == '' ?
-              Image.asset('assets/images/missing.png') : null,
-              radius: 30.0,
+            GestureDetector(
+              child: CircleAvatar(
+                backgroundImage: vm.user.avatar == '' ? null
+                    : NetworkImage(vm.user.avatar),
+                child: vm.user.avatar == '' ?
+                Image.asset('assets/images/missing.png') : null,
+                radius: 30.0,
+              ),
+              onTap: (){
+                Navigator.pop(context);
+                AppNavigate.push(context,
+                    UserProfilePage(
+                      isSelf: true,
+                      user: vm.accountState.user,
+                      accessToken: vm.accountState.accessToken,)
+                );
+              },
             ),
             Container(
               margin: EdgeInsets.only(top: 10.0),
@@ -145,8 +159,8 @@ class UserInfo extends StatelessWidget{
                               ],
                             ),
                             onTap: (){
-                              print("Following");
                               Navigator.pop(context);
+                              AppNavigate.push(context, FollowingPage());
                             },
                           ),
                           Spacer(flex: 1,),
@@ -160,8 +174,8 @@ class UserInfo extends StatelessWidget{
                               ],
                             ),
                             onTap: (){
-                              print("Follower");
                               Navigator.pop(context);
+                              AppNavigate.push(context, FollowerPage());
                             },
                           ),
                           Spacer(flex: 8,),
@@ -181,8 +195,10 @@ class UserInfo extends StatelessWidget{
 
 class _ViewModel {
   final UserEntity user;
+  final AccountState accountState;
 
   _ViewModel({
     @required this.user,
+    @required this.accountState,
   });
 }

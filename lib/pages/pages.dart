@@ -10,8 +10,6 @@ export 'tab.dart';
 //
 //export 'account/edit_mobile.dart';
 export 'account/login/login.dart';
-//export 'account/profile.dart';
-//export 'account/register.dart';
 //
 //export 'post/posts_liked.dart';
 //
@@ -21,3 +19,5 @@ export 'account/login/login.dart';
 export 'drawer/setting.dart';
 export 'drawer/mute_user.dart';
 export 'drawer/block_user.dart';
+export 'drawer/following.dart';
+export 'drawer/follower.dart';

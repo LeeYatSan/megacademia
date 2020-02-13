@@ -46,16 +46,30 @@ class MaApi {
   static String PushNewTooT = '$maApiSubBaseUrl/statuses'; // 发送一个新文章
   static String UpdateAccount = '$maApiSubBaseUrl/accounts/update_credentials'; // 更新用户信息
   static String Media = '$maApiSubBaseUrl/media'; // 媒体文件
-  static String MuteList = '$maApiSubBaseUrl/mutes'; // 获取静默用户列表
-  static String BlockList = '$maApiSubBaseUrl/blocks'; // 获取黑名单
-  static String Account = '$maApiSubBaseUrl/accounts'; // 设置/获取某用户信息
+  static String Muting = '$maApiSubBaseUrl/mutes'; // 获取静默用户列表
+  static String Blocked = '$maApiSubBaseUrl/blocks'; // 获取黑名单
   static String Relationship = '$maApiSubBaseUrl/accounts/relationships'; // 获取关系
+  static String Account(arg) {
+    return '$maApiSubBaseUrl/accounts/$arg';
+  }  // 获取用户信息
   static String Following(arg) {
     return '$maApiSubBaseUrl/accounts/$arg/following';
-  }  // 获取一个用户关注的用户
+  }  // 获取用户关注的用户
   static String Follower(arg) {
     return '$maApiSubBaseUrl/accounts/$arg/followers';
-  }  // 获取一个用户关注的用户
+  }  // 获取用户的粉丝
+  static String Mute(arg) {
+    return '$maApiSubBaseUrl/accounts/$arg/mute';
+  }  // 设置一个静默用户
+  static String Unmute(arg) {
+    return '$maApiSubBaseUrl/accounts/$arg/unmute';
+  }  // 移除一个静默用户
+  static String Block(arg) {
+    return '$maApiSubBaseUrl/accounts/$arg/block';
+  }  // 设置一个黑名单用户
+  static String Unblock(arg) {
+    return '$maApiSubBaseUrl/accounts/$arg/unblock';
+  }  // 设置一个黑名单用户
   static String UersArticle(arg, pragma) {
     return '$maApiSubBaseUrl/accounts/$arg/statuses?$pragma';
   } // 获取一个用户已经发送的嘟文

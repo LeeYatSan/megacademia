@@ -6,8 +6,8 @@ import 'package:megacademia/models/models.dart';
 import '../../components/common/app_bar.dart';
 
 
-class MuteUserPage extends StatelessWidget {
-  MuteUserPage({
+class FollowerPage extends StatelessWidget {
+  FollowerPage({
     Key key,
   }) : super(key: key);
 
@@ -16,8 +16,8 @@ class MuteUserPage extends StatelessWidget {
     return StoreConnector<AppState, UserEntity>(
       converter: (store) => store.state.account.user,
       builder: (context, user) => Scaffold(
-        appBar: createAppBar(context, '静默用户'),
-        body: UserList(type: 2, user: user),
+        appBar: createAppBar(context, '粉丝'),
+        body: UserList(type: 1, user: user,),
       ),
     );
   }

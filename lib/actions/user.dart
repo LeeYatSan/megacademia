@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:megacademia/actions/account.dart';
 import 'package:megacademia/config.dart';
 import 'package:megacademia/models/entity/relationship.dart';
 import 'package:meta/meta.dart';
@@ -24,6 +25,34 @@ class UserInfosAction {
 
   UserInfosAction({
     @required this.users,
+  });
+}
+
+class GetFollowingListAction {
+  final List<UserEntity> users;
+  final String userId;
+  final int offset;
+  final bool refresh;
+
+  GetFollowingListAction({
+    @required this.users,
+    @required this.userId,
+    this.offset,
+    this.refresh = false,
+  });
+}
+
+class GetFollowersListAction {
+  final List<UserEntity> users;
+  final String userId;
+  final int offset;
+  final bool refresh;
+
+  GetFollowersListAction({
+    @required this.users,
+    @required this.userId,
+    this.offset,
+    this.refresh = false,
   });
 }
 
@@ -119,12 +148,73 @@ ThunkAction<AppState> userInfoAction({
         (Store<AppState> store) async {
       final wgService = await MaFactory().getMaService();
       final response = await wgService.get(
-        '${MaApi.Account}/id'
+        MaApi.Account(id),
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        final user = UserEntity.fromJson(response.data);
+        final user = noteTransform(response);
         if (onSucceed != null) onSucceed(user);
+      } else {
+        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
+      }
+    };
+
+ThunkAction<AppState> getFollowingListAction({
+  @required String userId,
+  int limit,
+  int offset,
+  bool refresh = false,
+  void Function(List<UserEntity>) onSucceed,
+  void Function(NoticeEntity) onFailed,
+}) =>
+        (Store<AppState> store) async {
+      final wgService = await MaFactory().getMaService();
+      var state = store.state.account;
+      final response = await wgService.get(
+        MaApi.Following(userId),
+        headers: {'Authorization': state.accessToken,},
+      );
+
+      if (response.code == MaApiResponse.codeOk) {
+        final users = noteTransformForUserList(response);
+        store.dispatch(GetFollowingListAction(
+          users: users,
+          userId: userId,
+          offset: offset,
+          refresh: refresh,
+        ));
+        store.dispatch(userInfoAction(id: userId));
+        if (onSucceed != null) onSucceed(users);
+      } else {
+        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
+      }
+    };
+
+ThunkAction<AppState> getFollowersListAction({
+  @required String userId,
+  int limit,
+  int offset,
+  bool refresh = false,
+  void Function(List<UserEntity>) onSucceed,
+  void Function(NoticeEntity) onFailed,
+}) =>
+        (Store<AppState> store) async {
+      final wgService = await MaFactory().getMaService();
+      var state = store.state.account;
+      final response = await wgService.get(
+        MaApi.Follower(userId),
+        headers: {'Authorization': state.accessToken,},
+      );
+
+      if (response.code == MaApiResponse.codeOk) {
+        final users = noteTransformForUserList(response);
+        store.dispatch(GetFollowersListAction(
+          users: users,
+          userId: userId,
+          offset: offset,
+          refresh: refresh,
+        ));
+        if (onSucceed != null) onSucceed(users);
       } else {
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
       }
@@ -142,7 +232,7 @@ ThunkAction<AppState> followUserAction({
       final wgService = await MaFactory().getMaService();
       var state = store.state.account;
       final response = await wgService.post(
-        '${MaApi.Account}/$userId/follow',
+        MaApi.Follow(userId),
         headers: {'Authorization': state.accessToken,},
       );
 
@@ -150,10 +240,16 @@ ThunkAction<AppState> followUserAction({
         store.dispatch(userInfoAction(
             id: userId,
             onSucceed: (user)=>(
-                store.dispatch(MuteUserAction(
-                  user: user,
+                store.dispatch(FollowUserAction(
+                  user: user
                 ))
             )
+        ));
+        store.dispatch(userInfoAction(
+          id: store.state.account.user.id,
+          onSucceed: (user) => (
+              store.dispatch(AccountInfoAction(user: user))
+          ),
         ));
         if (onSucceed != null) onSucceed();
       } else {
@@ -173,13 +269,19 @@ ThunkAction<AppState> unfollowUserAction({
       final wgService = await MaFactory().getMaService();
       var state = store.state.account;
       final response = await wgService.post(
-        '${MaApi.Account}/$userId/unfollow',
+        MaApi.UnFollow(userId),
         headers: {'Authorization': state.accessToken,},
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        store.dispatch(UnmuteUserAction(
+        store.dispatch(UnfollowUserAction(
           userId: userId,
+        ));
+        store.dispatch(userInfoAction(
+            id: store.state.account.user.id,
+            onSucceed: (user) => (
+              store.dispatch(AccountInfoAction(user: user))
+            ),
         ));
         if (onSucceed != null) onSucceed();
       } else {
@@ -199,7 +301,7 @@ ThunkAction<AppState> getMuteUsersListAction({
       final wgService = await MaFactory().getMaService();
       var state = store.state.account;
       final response = await wgService.get(
-        MaApi.MuteList,
+        MaApi.Muting,
         headers: {'Authorization': state.accessToken,},
       );
 
@@ -229,7 +331,7 @@ ThunkAction<AppState> muteUserAction({
       final wgService = await MaFactory().getMaService();
       var state = store.state.account;
       final response = await wgService.post(
-        '${MaApi.Account}/$userId/mute',
+        MaApi.Mute(userId),
         headers: {'Authorization': state.accessToken,},
       );
 
@@ -260,7 +362,7 @@ ThunkAction<AppState> unmuteUserAction({
       final wgService = await MaFactory().getMaService();
       var state = store.state.account;
       final response = await wgService.post(
-        '${MaApi.Account}/$userId/unmute',
+        MaApi.Unmute(userId),
         headers: {'Authorization': state.accessToken,},
       );
 
@@ -286,7 +388,7 @@ ThunkAction<AppState> getBlockUsersListAction({
       final wgService = await MaFactory().getMaService();
       var state = store.state.account;
       final response = await wgService.get(
-        MaApi.BlockList,
+        MaApi.Blocked,
         headers: {'Authorization': state.accessToken,},
       );
 
@@ -316,7 +418,7 @@ ThunkAction<AppState> blockUserAction({
       final wgService = await MaFactory().getMaService();
       var state = store.state.account;
       final response = await wgService.post(
-        '${MaApi.Account}/$userId/block',
+        MaApi.Block(userId),
         headers: {'Authorization': state.accessToken,},
       );
 
@@ -324,7 +426,7 @@ ThunkAction<AppState> blockUserAction({
         store.dispatch(userInfoAction(
             id: userId,
             onSucceed: (user)=>(
-                store.dispatch(MuteUserAction(
+                store.dispatch(BlockUserAction(
                   user: user,
                 ))
             )
@@ -347,12 +449,12 @@ ThunkAction<AppState> unblockUserAction({
       final wgService = await MaFactory().getMaService();
       var state = store.state.account;
       final response = await wgService.post(
-        '${MaApi.Account}/$userId/unblock',
+        MaApi.Unblock(userId),
         headers: {'Authorization': state.accessToken,},
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        store.dispatch(UnmuteUserAction(
+        store.dispatch(UnblockUserAction(
           userId: userId,
         ));
         if (onSucceed != null) onSucceed();

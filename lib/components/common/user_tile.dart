@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:megacademia/components/common/failed_snack_bar.dart';
+import 'package:megacademia/models/entity/relationship.dart';
 import 'package:megacademia/pages/common/user_profile.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
@@ -44,7 +46,15 @@ class UserTile extends StatelessWidget {
         Image.asset('assets/images/missing.png') : null,
         radius: 25.0,
       ),
-      title: Text(user.username),
+      title: Row(
+        children: <Widget>[
+          Text(user.displayName == '' ? user.username : user.displayName),
+          Opacity(
+            opacity: user.locked ? 1.0 : 0.0,
+            child: Icon(Icons.lock, color: MaTheme.maYellows),
+          ),
+        ],
+      ),
       subtitle: Text(user.note, maxLines: 1, softWrap: true,),
       trailing: _getTrailing(context),
     );
@@ -54,27 +64,12 @@ class UserTile extends StatelessWidget {
     Widget trailing;
     switch(type){
       case 0:{
-        trailing = Container(
-          padding: EdgeInsets.all(5.0),
-          child: FlatButton(
-            color: MaTheme.maYellows,
-            child: Text('已关注', style: TextStyle(color: Colors.white),),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),),
-            onPressed: (){unfollowUser(context, user);},
-          ),
-        );
+        trailing = _following(context);
       }break;
       case 1:{
-        trailing = Container(
-          padding: EdgeInsets.all(5.0),
-          child: OutlineButton(
-            child: Text('关注', style: TextStyle(color: MaTheme.maYellows),),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),),
-            onPressed: (){followUser(context, user);},
-          ),
-        );
+        AppState currState = StoreProvider.of<AppState>(context).state;
+        RelationshipEntity relationship = currState.user.currRelationship;
+        trailing = relationship.following ? _following(context) : _follow(context);
       }break;
       case 2:{
         trailing = Container(
@@ -102,6 +97,37 @@ class UserTile extends StatelessWidget {
       }break;
     }
     return trailing;
+  }
+
+  Widget _following(BuildContext context){
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      child: FlatButton(
+        color: MaTheme.maYellows,
+        child: Text('已关注', style: TextStyle(color: Colors.white),),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),),
+        onPressed: (){unfollowUser(context, user);},
+      ),
+    );
+  }
+
+  Widget _follow(BuildContext context){
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      child: OutlineButton(
+        child: Text('关注', style: TextStyle(color: MaTheme.maYellows),),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),),
+        borderSide: BorderSide(color: MaTheme.maYellows),
+        onPressed: (){
+          followUser(context, user);
+          if(user.locked){
+            createFailedSnackBar(context, msg:'对方为私密账户，已发送关注申请，请等待对方确认申请！');
+          }
+        },
+      ),
+    );
   }
 }
 
