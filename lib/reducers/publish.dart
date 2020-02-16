@@ -13,7 +13,6 @@ final publishReducer = combineReducers<PublishState>([
 
 PublishState _save(PublishState state, PublishSaveAction action) {
   return state.copyWith(
-    type: action.type,
     text: action.text,
   );
 }

@@ -68,4 +68,9 @@ class MaTheme {
     }
     return _theme;
   }
+
+  static final statusFootText = TextStyle(
+      fontSize: 12.0,
+      fontWeight: FontWeight.w300,
+      color: greyDark);
 }

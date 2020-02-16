@@ -1,10 +1,10 @@
+import 'package:megacademia/models/models.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../config.dart';
 import 'account.dart';
 import 'publish.dart';
-import 'post.dart';
 import 'user.dart';
 
 part 'app.g.dart';
@@ -16,25 +16,25 @@ class AppState {
   final String clientId;
   final String clientSecret;
   final AccountState account;
-  final PostState post;
   final PublishState publish;
   final UserState user;
+  final StatusState status;
 
   AppState({
     String version,
     String clientId,
     String clientSecret,
     AccountState account,
-    PostState post,
     PublishState publish,
     UserState user,
+    StatusState status,
   })  : this.version = version ?? MaConfig.packageInfo.version,
         this.clientId = clientId ?? '',
         this.clientSecret = clientSecret ?? '',
         this.account = account ?? AccountState(),
-        this.post = post ?? PostState(),
         this.publish = publish ?? PublishState(),
-        this.user = user ?? UserState();
+        this.user = user ?? UserState(),
+        this.status = status ?? StatusState();
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
       _$AppStateFromJson(json);
@@ -46,17 +46,17 @@ class AppState {
     String clientId,
     String clientSecret,
     AccountState account,
-    PostState post,
     PublishState publish,
     UserState user,
+    StatusState status,
   }) =>
       AppState(
         version: version ?? this.version,
         clientId: clientId ?? this.clientId,
         clientSecret: clientSecret ?? this.clientSecret,
         account: account ?? this.account,
-        post: post ?? this.post,
         publish: publish ?? this.publish,
         user: user ?? this.user,
+        status: status ?? this.status,
       );
 }

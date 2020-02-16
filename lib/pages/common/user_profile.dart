@@ -10,9 +10,7 @@ import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../components/common/app_bar.dart';
-import '../../components/common/app_navigate.dart';
-import '../../components/common/failed_snack_bar.dart';
+import '../../components/components.dart';
 import '../../models/models.dart';
 import '../../icons.dart';
 import '../../theme.dart';
@@ -23,7 +21,7 @@ class UserProfilePage extends StatelessWidget {
   final bool isSelf;
   final UserEntity user;
   final String accessToken;
-  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+//  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   static final _bodyKey = GlobalKey<_BodyState>();
 
   UserProfilePage({
@@ -36,7 +34,7 @@ class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+//      key: _scaffoldKey,
       appBar: createAppBar(context,
           '${user.displayName == '' ? user.username : user.displayName}的主页'),
       body: _Body(user, isSelf, key: _bodyKey,
@@ -262,7 +260,7 @@ class _BodyState extends State<_Body> {
               Container(
                   width:40.0,
                   height: 20.0,
-                  margin: EdgeInsets.only(left: 2.5, right: 2.5),
+                  margin: EdgeInsets.only(left: 1, right: 1),
                   child: (relationship.following ?
                     FlatButton(
                       padding: EdgeInsets.all(0.0),
@@ -401,8 +399,10 @@ class _BodyState extends State<_Body> {
                                         children: <Widget>[
                                           Row(
                                             children: <Widget>[
-                                              Text(_user.displayName, style: TextStyle(fontSize: 16.0,
-                                                  fontWeight: FontWeight.w700, color: Colors.black),
+                                              Text(_user.displayName == '' ?  _user.username : _user.displayName
+                                                , style: TextStyle(fontSize: 16.0,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.black),
                                               ),
                                               Opacity(
                                                 opacity: _user.locked ? 1.0 : 0.0,

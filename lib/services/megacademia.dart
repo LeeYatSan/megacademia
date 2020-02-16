@@ -125,4 +125,10 @@ class MaService {
     Map<String, dynamic> headers}) async {
     return request('PATCH', path, data: data, headers: headers);
   }
+
+  Future<MaApiResponse> delete(String path, {Map<String, dynamic> data,
+    Map<String, dynamic> headers, Map<String, dynamic> queryParameters}) async {
+    return request('DELETE', path, data: data, headers: headers,
+        queryParameters: queryParameters);
+  }
 }

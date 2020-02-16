@@ -4,10 +4,10 @@ export 'notification.dart';
 //export 'publish.dart';
 export 'tab.dart';
 //
-//export 'common/images_player.dart';
+export 'common/images_player.dart';
 //export 'common/input.dart';
-//export 'common/video_player.dart';
-//
+export 'common/video_player.dart';
+
 //export 'account/edit_mobile.dart';
 export 'account/login/login.dart';
 //

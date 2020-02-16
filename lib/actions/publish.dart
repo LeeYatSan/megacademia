@@ -3,11 +3,9 @@ import 'package:meta/meta.dart';
 import '../models/models.dart';
 
 class PublishSaveAction {
-  final PostType type;
   final String text;
 
   PublishSaveAction({
-    this.type,
     this.text,
   });
 }

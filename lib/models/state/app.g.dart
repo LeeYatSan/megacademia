@@ -14,15 +14,15 @@ AppState _$AppStateFromJson(Map<String, dynamic> json) {
     account: json['account'] == null
         ? null
         : AccountState.fromJson(json['account'] as Map<String, dynamic>),
-    post: json['post'] == null
-        ? null
-        : PostState.fromJson(json['post'] as Map<String, dynamic>),
     publish: json['publish'] == null
         ? null
         : PublishState.fromJson(json['publish'] as Map<String, dynamic>),
     user: json['user'] == null
         ? null
         : UserState.fromJson(json['user'] as Map<String, dynamic>),
+    status: json['status'] == null
+        ? null
+        : StatusState.fromJson(json['status'] as Map<String, dynamic>),
   );
 }
 
@@ -31,7 +31,7 @@ Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
       'clientId': instance.clientId,
       'clientSecret': instance.clientSecret,
       'account': instance.account,
-      'post': instance.post,
       'publish': instance.publish,
       'user': instance.user,
+      'status': instance.status,
     };

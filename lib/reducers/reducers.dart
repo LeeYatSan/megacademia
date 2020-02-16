@@ -2,7 +2,7 @@ import '../models/models.dart';
 import '../actions/actions.dart';
 import 'account.dart';
 import 'publish.dart';
-import 'post.dart';
+import 'status.dart';
 import 'user.dart';
 
 AppState appReducer(AppState state, action) {
@@ -21,7 +21,7 @@ AppState appReducer(AppState state, action) {
     return state.copyWith(
       account: accountReducer(state.account, action),
       publish: publishReducer(state.publish, action),
-      post: postReducer(state.post, action),
+      status: statusReducer(state.status, action),
       user: userReducer(state.user, action),
     );
   }

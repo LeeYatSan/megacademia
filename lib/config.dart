@@ -73,7 +73,6 @@ class MaApi {
   static String UersArticle(arg, pragma) {
     return '$maApiSubBaseUrl/accounts/$arg/statuses?$pragma';
   } // 获取一个用户已经发送的嘟文
-  static String Favourites = '$maApiSubBaseUrl/favourites'; // 收藏的嘟文
   static String Follow(arg) {
     return '$maApiSubBaseUrl/accounts/$arg/follow';
   } // 关注某人
@@ -81,10 +80,27 @@ class MaApi {
     return '$maApiSubBaseUrl/accounts/$arg/unfollow';
   } // 取关某人
   static String CustomEmojis = '$maApiSubBaseUrl/custom_emojis'; // 该节点的emojis
-  static String FavouritesArticle(arg) {
-    return '$maApiSubBaseUrl/statuses/$arg/favourite'; // 收藏某个文章
+  static String Favourites = '$maApiSubBaseUrl/favourites'; // 点赞的嘟文
+  static String Favourite(arg) {
+    return '$maApiSubBaseUrl/statuses/$arg/favourite'; // 点赞某个嘟文
   }
-  static String UnFavouritesArticle(arg) {
-    return '$maApiSubBaseUrl/statuses/$arg/unfavourite'; // 取消收藏某个文章
+  static String UnFavourite(arg) {
+    return '$maApiSubBaseUrl/statuses/$arg/unfavourite'; // 取消点赞某个嘟文
   }
+  static String Boost(arg) {
+    return '$maApiSubBaseUrl/statuses/$arg/reblog'; // 转发嘟文
+  }
+  static String Unboost(arg) {
+    return '$maApiSubBaseUrl/statuses/$arg/reblog'; // 取消转发某个嘟文
+  }
+  static String DeleteStatus(arg) {
+    return '$maApiSubBaseUrl/statuses/$arg'; // 删除某个嘟文
+  }
+  static String PublishStatuses(arg) {
+    return '$maApiSubBaseUrl/statuses/$arg'; // 删除某个嘟文
+  }
+  static String SomeonesStatuses(arg) {
+    return '$maApiSubBaseUrl/accounts/$arg/statuses'; // 查看某人嘟文
+  }
+  static String PublicStatuses = '$maApiSubBaseUrl/timelines/public'; // 查看公共嘟文
 }
