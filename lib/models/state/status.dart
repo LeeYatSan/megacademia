@@ -44,25 +44,3 @@ class StatusState {
         followingStatus: followingStatus ?? this.followingStatus,
       );
 }
-
-@JsonSerializable()
-@immutable
-class OthersStatusState {
-  final List<StatusEntity> publishedStatus;
-
-  OthersStatusState({
-    this.publishedStatus = const [],
-  });
-
-  factory OthersStatusState.fromJson(Map<String, dynamic> json) =>
-      _$OthersStatusStateFromJson(json);
-
-  Map<String, dynamic> toJson() => _$OthersStatusStateToJson(this);
-
-  OthersStatusState copyWith({
-    List<UserEntity> publishedStatus,
-  }) =>
-      OthersStatusState(
-        publishedStatus: publishedStatus ?? this.publishedStatus,
-      );
-}

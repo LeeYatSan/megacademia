@@ -10,7 +10,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 import '../factory.dart';
 import '../models/models.dart';
 import '../services/services.dart';
-import 'utils.dart';
+import '../utils/note_util.dart';
 
 class UserInfoAction {
   final UserEntity user;
@@ -152,7 +152,8 @@ ThunkAction<AppState> userInfoAction({
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        final user = noteTransform(response);
+        final user = UserEntity.fromJson(response.data);
+//        final user = noteTransform(response);
         if (onSucceed != null) onSucceed(user);
       } else {
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
@@ -176,7 +177,8 @@ ThunkAction<AppState> getFollowingListAction({
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        final users = noteTransformForUserList(response);
+        final users = UserListEntity.fromJson(response.data).users;
+//        final users = noteTransformForUserList(response);
         store.dispatch(GetFollowingListAction(
           users: users,
           userId: userId,
@@ -207,7 +209,8 @@ ThunkAction<AppState> getFollowersListAction({
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        final users = noteTransformForUserList(response);
+        final users = UserListEntity.fromJson(response.data).users;
+//        final users = noteTransformForUserList(response);
         store.dispatch(GetFollowersListAction(
           users: users,
           userId: userId,
@@ -306,7 +309,8 @@ ThunkAction<AppState> getMuteUsersListAction({
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        final users = noteTransformForUserList(response);
+        final users = UserListEntity.fromJson(response.data).users;
+//        final users = noteTransformForUserList(response);
         store.dispatch(GetMutingUsersAction(
           users: users,
           userId: userId,
@@ -393,7 +397,8 @@ ThunkAction<AppState> getBlockUsersListAction({
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        final users = noteTransformForUserList(response);
+        final users = UserListEntity.fromJson(response.data).users;
+//        final users = noteTransformForUserList(response);
         store.dispatch(GetBlockedUsersAction(
           users: users,
           userId: userId,

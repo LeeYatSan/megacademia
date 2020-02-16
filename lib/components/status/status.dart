@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:megacademia/pages/common/user_profile.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
@@ -75,56 +74,6 @@ class _StatusState extends State<Status> {
       },
     ));
   }
-
-//  void _markStatus(BuildContext context, _ViewModel vm) {
-//    print('mark');
-//    setState(() {
-//      _isLoading = true;
-//    });
-//    final store = StoreProvider.of<AppState>(context);
-//    store.dispatch(markStatusAction(
-//      statusId: widget.status.id,
-//      onSucceed: () {
-//        setState(() {
-//          _isLoading = false;
-//        });
-//      },
-//      onFailed: (notice) {
-//        setState(() {
-//          _isLoading = false;
-//        });
-//        Scaffold.of(context).showSnackBar(SnackBar(
-//          content: Text(notice.message),
-//          duration: notice.duration,
-//        ));
-//      },
-//    ));
-//  }
-
-//  void _unmarkStatus(BuildContext context, _ViewModel vm) {
-//    print('unmark');
-//    setState(() {
-//      _isLoading = true;
-//    });
-//    final store = StoreProvider.of<AppState>(context);
-//    store.dispatch(unmarkStatusAction(
-//      statusId: widget.status.id,
-//      onSucceed: () {
-//        setState(() {
-//          _isLoading = false;
-//        });
-//      },
-//      onFailed: (notice) {
-//        setState(() {
-//          _isLoading = false;
-//        });
-//        Scaffold.of(context).showSnackBar(SnackBar(
-//          content: Text(notice.message),
-//          duration: notice.duration,
-//        ));
-//      },
-//    ));
-//  }
 
   void _boostStatus(BuildContext context, _ViewModel vm) {
     print('boost');
@@ -278,8 +227,7 @@ class _StatusState extends State<Status> {
         userId: vm.creator.id,
         onSucceed: (relationship){
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => UserProfilePage(user: vm.creator,
-              accessToken: vm.accountState.accessToken,
+            builder: (context) => ProfilePage(user: vm.creator,
               isSelf: vm.accountState.user.id == vm.creator.id,)
           ));
         }));
@@ -433,7 +381,7 @@ class _StatusState extends State<Status> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                widget.status.reblogged
+                widget.status.reblogsCount != 0
                     ? GestureDetector(
                   onTap: Feedback.wrapForTap(
                         () => _unboostStatus(context, vm),
@@ -484,7 +432,7 @@ class _StatusState extends State<Status> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                widget.status.favourited
+                widget.status.favouritesCount != 0
                     ? GestureDetector(
                   onTap: Feedback.wrapForTap(
                         () => _unlikeStatus(context, vm),

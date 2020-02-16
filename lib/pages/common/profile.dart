@@ -1,185 +1,214 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:megacademia/actions/account.dart';
-import 'package:megacademia/actions/actions.dart';
-import 'package:megacademia/components/common/failed_snack_bar.dart';
-import 'package:megacademia/components/common/user_tile.dart';
 import 'package:megacademia/models/entity/relationship.dart';
-import 'package:megacademia/pages/common/edit_user_info.dart';
+import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import '../../components/components.dart';
 import '../../models/models.dart';
+import '../../actions/actions.dart';
 import '../../icons.dart';
 import '../../theme.dart';
 import '../../pages/pages.dart';
 
-class UserProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
 
   final bool isSelf;
   final UserEntity user;
-  final String accessToken;
-//  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  static final _bodyKey = GlobalKey<_BodyState>();
 
-  UserProfilePage({
+  ProfilePage({
+    Key key,
     @required this.user,
     @required this.isSelf,
-    this.accessToken = '',
-    Key key,
   }) : super(key: key);
 
   @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  var _bodyKey = GlobalKey<_BodyState>();
+//  final bool _isSelf;
+//  final UserEntity _user;
+//
+//  _ProfilePageState(this._isSelf, this._user);
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-//      key: _scaffoldKey,
-      appBar: createAppBar(context,
-          '${user.displayName == '' ? user.username : user.displayName}的主页'),
-      body: _Body(user, isSelf, key: _bodyKey,
-        store: StoreProvider.of<AppState>(context),
+
+    return StoreConnector<AppState, _ViewModel>(
+      converter: (store) => _ViewModel(
+        publishedStatus: (store.state.status.publishedStatus[widget.user.id] ?? [])
+            .map<StatusEntity>((v) => store.state.status.statuses[v]).toList(),
+        user: widget.user,
+        isSelf: widget.isSelf,
+        relationship: store.state.user.currRelationship,
+      ),
+      builder: (context, vm) => Scaffold(
+        body: _Body(
+          key: _bodyKey,
+          store: StoreProvider.of<AppState>(context),
+          vm: vm,
+//          isSelf: _isSelf,
+//          user: _user,
+        ),
       ),
     );
   }
 }
 
+class _ViewModel {
+  final List<StatusEntity> publishedStatus;
+  final bool isSelf;
+  UserEntity user;
+  RelationshipEntity relationship;
+
+  _ViewModel({
+    @required this.publishedStatus,
+    @required this.user,
+    @required this.isSelf,
+    @required this.relationship,
+  });
+}
+
 class _Body extends StatefulWidget {
   final Store<AppState> store;
-  UserEntity _user;
-  final bool _isSelf;
+  final _ViewModel vm;
+//   bool isSelf;
+//   UserEntity user;
 
-  _Body(
-      this._user,
-      this._isSelf,
-      {Key key,
-        @required this.store,})
-      : super(key: key);
+  _Body({
+    Key key,
+    @required this.store,
+    @required this.vm,
+//    @required this.isSelf,
+//    @required this.user,
+  }) : super(key: key);
 
   @override
-  _BodyState createState() =>
-      _BodyState(_user, _isSelf, store.state.user.currRelationship);
+  _BodyState createState() => _BodyState(vm);
 }
 
 class _BodyState extends State<_Body> {
-  UserEntity _user;
-  final bool _isSelf;
-  RelationshipEntity relationship;
+//  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final scrollController = ScrollController();
   var _isLoading = false;
-  final _scrollController = ScrollController();
+  _ViewModel vm;
 
-  _BodyState(this._user, this._isSelf, this.relationship){
-  }
+  _BodyState(this.vm);
+
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
-//    _loadPostsFollowing(recent: true, more: false);
-  }
 
+    scrollController.addListener(_scrollListener);
+
+    _loadStatus(recent: true, more: false);
+  }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_scrollListener);
+    scrollController.removeListener(_scrollListener);
+    scrollController.dispose();
 
     super.dispose();
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-//      _loadPostsFollowing();
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      _loadStatus();
     }
   }
 
-//  void _loadPostsFollowing({
-//    bool recent = false,
-//    bool more = true,
-//    bool refresh = false,
-//    Completer<Null> completer,
-//  }) {
-//    if (_isLoading) {
-//      completer?.complete();
-//      return;
-//    }
-//
-//    if (!refresh) {
-//      setState(() {
-//        _isLoading = true;
-//      });
-//    }
-//
-//    int beforeId;
-//    if (more && widget.vm.postsFollowing.isNotEmpty) {
-//      beforeId = widget.vm.postsFollowing.last.id;
-//    }
-//    int afterId;
-//    if (recent && widget.vm.postsFollowing.isNotEmpty) {
-//      afterId = widget.vm.postsFollowing.first.id;
-//    }
-//    widget.store.dispatch(postsFollowingAction(
-//      beforeId: beforeId,
-//      afterId: afterId,
-//      refresh: refresh,
-//      onSucceed: (posts) {
-//        if (!refresh) {
-//          setState(() {
-//            _isLoading = false;
-//          });
-//        }
-//
-//        completer?.complete();
-//      },
-//      onFailed: (notice) {
-//        if (!refresh) {
-//          setState(() {
-//            _isLoading = false;
-//          });
-//        }
-//
-//        completer?.complete();
-//
-//        Scaffold.of(context).showSnackBar(SnackBar(
-//          content: Text(notice.message),
-//          duration: notice.duration,
-//        ));
-//      },
-//    ));
-//  }
+  void _loadStatus({
+    bool recent = false,
+    bool more = true,
+    bool refresh = false,
+    Completer<Null> completer,
+  }) {
+    if (_isLoading) {
+      completer?.complete();
+      return;
+    }
 
-  Future<Null> _refresh() {
+    if (!refresh) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
+
+    String beforeId;
+    if (more && vm.publishedStatus.isNotEmpty) {
+      beforeId = vm.publishedStatus.last.id;
+    }
+    String afterId;
+    if (recent && vm.publishedStatus.isNotEmpty) {
+      afterId = vm.publishedStatus.first.id;
+    }
+    widget.store.dispatch(getPublishedStatusAction(
+      userId: vm.user.id,
+      beforeId: beforeId,
+      afterId: afterId,
+      refresh: refresh,
+      onSucceed: (statuses) {
+        if (!refresh) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        completer?.complete();
+      },
+      onFailed: (notice) {
+        if (!refresh) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        completer?.complete();
+        createFailedSnackBar(context, notice: notice);
+      },
+    ));
+  }
+
+  Future<Null> _refreshStatus() {
     final completer = Completer<Null>();
-//    _loadPostsFollowing(
-//      more: false,
-//      refresh: true,
-//      completer: completer,
-//    );
+    _loadStatus(
+      more: false,
+      refresh: true,
+      completer: completer,
+    );
     return completer.future;
   }
 
   Widget _createButton(UserEntity user){
-    if(_isSelf){
+    if(vm.isSelf){
       return Container(
-        width: 20.0,
-        height: 20.0,
-        margin: EdgeInsets.only(left: 2.5, right: 2.5),
-        child: OutlineButton(
-          padding: EdgeInsets.all(0.0),
-          highlightColor: Colors.white,
-          child: Icon(MaIcon.edit, color: MaTheme.maYellows, size: 15.0,),
-          shape: CircleBorder(),
-          borderSide: BorderSide(color: MaTheme.maYellows),
-          onPressed: (){
-            AppNavigate.push(context, EditUserInfoPage(), callBack: (data){
-              setState(() {
-                _user = widget.store.state.account.user;
+          width: 20.0,
+          height: 20.0,
+          margin: EdgeInsets.only(left: 2.5, right: 2.5),
+          child: OutlineButton(
+            padding: EdgeInsets.all(0.0),
+            highlightColor: Colors.white,
+            child: Icon(MaIcon.edit, color: MaTheme.maYellows, size: 15.0,),
+            shape: CircleBorder(),
+            borderSide: BorderSide(color: MaTheme.maYellows),
+            onPressed: (){
+              AppNavigate.push(context, EditUserInfoPage(), callBack: (data){
+                setState(() {
+                  vm.user = widget.store.state.account.user;
+                });
               });
-            });
-          },
-        )
+            },
+          )
       );
     }
     else{
+      RelationshipEntity relationship = vm.relationship;
       return Container(
           width: 70.0,
           height: 20.0,
@@ -258,41 +287,41 @@ class _BodyState extends State<_Body> {
                   )
               ),
               Container(
-                  width:40.0,
-                  height: 20.0,
-                  margin: EdgeInsets.only(left: 1, right: 1),
-                  child: (relationship.following ?
-                    FlatButton(
-                      padding: EdgeInsets.all(0.0),
-                      color: MaTheme.maYellows,
-                      highlightColor: Colors.white,
-                      child: Text('已关注', style: TextStyle(color: Colors.white, fontSize: 10.0),),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      onPressed: (){
-                        unfollowUser(context, user);
-                        setState(() {
-                          relationship = relationship.copyWith(following: false);
-                        });
-                      },
-                    ) :
-                    OutlineButton(
-                      padding: EdgeInsets.all(0.0),
-                      highlightColor: Colors.white,
-                      child: Text('关注', style: TextStyle(color: MaTheme.maYellows, fontSize: 10.0),),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      borderSide: BorderSide(color: MaTheme.maYellows),
-                      onPressed: (){
-                        followUser(context, user);
-                        setState(() {
-                          relationship = relationship.copyWith(following: true);
-                        });
-                      },
-                    )
+                width:40.0,
+                height: 20.0,
+                margin: EdgeInsets.only(left: 1, right: 1),
+                child: (relationship.following ?
+                FlatButton(
+                  padding: EdgeInsets.all(0.0),
+                  color: MaTheme.maYellows,
+                  highlightColor: Colors.white,
+                  child: Text('已关注', style: TextStyle(color: Colors.white, fontSize: 10.0),),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
+                  onPressed: (){
+                    unfollowUser(context, user);
+                    setState(() {
+                      vm.relationship = relationship.copyWith(following: false);
+                    });
+                  },
+                ) :
+                OutlineButton(
+                  padding: EdgeInsets.all(0.0),
+                  highlightColor: Colors.white,
+                  child: Text('关注', style: TextStyle(color: MaTheme.maYellows, fontSize: 10.0),),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  borderSide: BorderSide(color: MaTheme.maYellows),
+                  onPressed: (){
+                    followUser(context, user);
+                    setState(() {
+                      vm.relationship = relationship.copyWith(following: true);
+                    });
+                  },
+                )
+                ),
               ),
             ],
           )
@@ -332,29 +361,79 @@ class _BodyState extends State<_Body> {
     var file = await ImagePicker.pickImage(source: source);
     if (file != null) {
       widget.store.dispatch(accountEditImageAction(
-        _isHeader, file.path,
-        onSucceed: (){
-          build(context);
-          setState(() {
-            _user = widget.store.state.account.user;
-          });
-        },
-        onFailed: (notice){
-          if(notice.message.contains('422'))
-          createFailedSnackBar(context,
-              msg: '[图片上传失败]:图片过大或格式错误，请更换图片！');
-        }
+          _isHeader, file.path,
+          onSucceed: (){
+            build(context);
+            setState(() {
+              vm.user = widget.store.state.account.user;
+            });
+          },
+          onFailed: (notice){
+            if(notice.message.contains('422'))
+              createFailedSnackBar(context,
+                  msg: '[图片上传失败]:图片过大或格式错误，请更换图片！');
+          }
       ));
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        RefreshIndicator(
-          onRefresh: _refresh,
-          child: Container(
+  Widget _buildBody(){
+    List<StatusEntity> publishedStatus = widget.vm.publishedStatus;
+    return Container(
+      color: Colors.white,
+      margin: EdgeInsets.only(top: 75),
+      child: Stack(
+        children: <Widget>[
+          RefreshIndicator(
+            onRefresh: _refreshStatus,
+            child: CustomScrollView(
+              key: PageStorageKey<String>('${vm.user.id}Profile'),
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: <Widget>[
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) => Status(
+                      key: Key(publishedStatus[index].id.toString()),
+                      status: publishedStatus[index],
+                    ),
+                    childCount: publishedStatus.length,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Visibility(
+            visible: _isLoading,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSilverAppBar(BuildContext context, bool innerBoxIsScrolled) {
+    final offset = MediaQuery.of(context).size.height * 0.1;
+    UserEntity user = vm.user;
+    bool isSelf = vm.isSelf;
+    return SliverOverlapAbsorber(
+      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+      sliver: SliverAppBar(
+        expandedHeight: 300+offset,
+        forceElevated: innerBoxIsScrolled,
+        title: Text('${user.displayName == '' ? user.username
+            : user.displayName}的主页',
+          style: TextStyle(fontWeight: FontWeight.w700),),
+        leading: IconButton(
+          icon: Icon(MaIcon.back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        pinned: true,
+        backgroundColor: Colors.white,
+        flexibleSpace: FlexibleSpaceBar(
+          background:  Container(
+//            margin: EdgeInsets.only(top: offset),
             child: Column(
               children: <Widget>[
                 Stack(
@@ -367,21 +446,21 @@ class _BodyState extends State<_Body> {
                               Container(
                                 child: Image.asset('assets/images/ma_header.png',
                                   fit: BoxFit.cover, width: double.infinity,),
-                                height: 120.0,
+                                height: 120.0+offset,
                               ),
                               Container(
                                 child: FadeInImage.assetNetwork(
                                   placeholder: 'assets/images/ma_header.png',
-                                  image: _user.header,
+                                  image: user.header,
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                 ),
-                                height: 120.0,
+                                height: 120.0+offset,
                               ),
                             ],
                           ),
                           onTap: (){
-                            if(_isSelf)
+                            if(isSelf)
                               _addFile(true);
                           },
                         ),
@@ -399,18 +478,19 @@ class _BodyState extends State<_Body> {
                                         children: <Widget>[
                                           Row(
                                             children: <Widget>[
-                                              Text(_user.displayName == '' ?  _user.username : _user.displayName
+                                              Text(user.displayName == '' ?
+                                              user.username : user.displayName
                                                 , style: TextStyle(fontSize: 16.0,
                                                     fontWeight: FontWeight.w700,
                                                     color: Colors.black),
                                               ),
                                               Opacity(
-                                                opacity: _user.locked ? 1.0 : 0.0,
+                                                opacity: user.locked ? 1.0 : 0.0,
                                                 child: Icon(Icons.lock, color: MaTheme.maYellows, size: 16,),
                                               ),
                                             ],
                                           ),
-                                          Text('@${_user.username}',
+                                          Text('@${user.username}',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w300,
                                                 fontSize: 12.0),
@@ -423,7 +503,7 @@ class _BodyState extends State<_Body> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
-                                          _createButton(_user),
+                                          _createButton(user),
                                         ],
                                       ),
                                     ),
@@ -434,26 +514,45 @@ class _BodyState extends State<_Body> {
                                 width: double.infinity,
                                 margin: EdgeInsets.only(left: 30.0, right:20.0,
                                     top: 10.0, bottom: 20.0),
-                                child: Text(_user.note,
-                                  style: TextStyle(fontSize: 12.0),),
+//                                child: Text(user.note,
+//                                  style: TextStyle(fontSize: 12.0),),
+                                  child: Html(
+                                    data: user.note,
+                                    onLinkTap: (url) {
+                                      AppNavigate.push(
+                                          context,
+                                          WebviewScaffold(
+                                            url: url,
+                                            appBar: createAppBar(context, '外部网页'),
+                                            withZoom: true,
+                                            withLocalStorage: true,
+                                            clearCookies: true,
+                                          )
+                                      );
+                                    },
+                                  ),
                               ),
-//                              Divider(height: 1.0,indent: 0.0,color: Colors.black12),
                               Container(
-                                  height: 30.0,
                                   padding: EdgeInsets.only(left: 30.0, top: 5.0,
                                       right: 30.0, bottom: 5.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
+//                                      Row(
+//                                        children: <Widget>[
+//                                          Text('动态  ', style: TextStyle(fontWeight: FontWeight.w700),),
+//                                          Text('${widget.vm.publishedStatus.length}'),
+//                                        ],
+//                                      ),
                                       GestureDetector(
                                         child: Row(
                                           children: <Widget>[
                                             Text('关注  ', style: TextStyle(fontWeight: FontWeight.w700),),
-                                            Text('${_user.followingCount}'),
+                                            Text('${user.followingCount}'),
                                           ],
                                         ),
                                         onTap: (){
-                                          if(_user.id == widget.store.state.account.user.id){
+                                          if(user.id == widget.store.state.account.user.id){
                                             AppNavigate.push(context, FollowingPage());
                                           }
                                           else{
@@ -465,43 +564,43 @@ class _BodyState extends State<_Body> {
                                         child: Row(
                                           children: <Widget>[
                                             Text('粉丝  ', style: TextStyle(fontWeight: FontWeight.w700),),
-                                            Text('${_user.followersCount}'),
+                                            Text('${user.followersCount}'),
                                           ],
                                         ),
                                         onTap: (){
-                                          if(_user.id == widget.store.state.account.user.id){
+                                          if(user.id == widget.store.state.account.user.id){
                                             AppNavigate.push(context, FollowerPage());
                                           }
                                           else{
                                             createFailedSnackBar(context, msg: '暂时无法查看该用户的粉丝列表！');
                                           }
                                         },
-                                      )
+                                      ),
                                     ],
                                   )
                               ),
                               Divider(height: 1.0,indent: 0.0,color: Colors.black12),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 60.0, left: 30.0),
+                      margin: EdgeInsets.only(top: 60.0+offset, left: 30.0),
                       child: GestureDetector(
                         child: CircleAvatar(
                           radius: 60.0,
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
-                            backgroundImage: _user.avatar == '' ? null
-                                : NetworkImage(_user.avatar),
-                            child: _user.avatar == '' ?
+                            backgroundImage: user.avatar == '' ? null
+                                : NetworkImage(user.avatar),
+                            child: user.avatar == '' ?
                             Image.asset('assets/images/missing.png') : null,
                             radius: 55.0,
                           ),
                         ),
                         onTap: (){
-                          if(_isSelf)
+                          if(isSelf)
                             _addFile(false);
                         },
                       ),
@@ -511,6 +610,21 @@ class _BodyState extends State<_Body> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        NestedScrollView(
+          controller: scrollController,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => <Widget>[
+            _buildSilverAppBar(context, innerBoxIsScrolled),
+          ],
+          body: _buildBody(),
         ),
         Visibility(
           visible: _isLoading,

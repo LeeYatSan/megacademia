@@ -9,7 +9,7 @@ import '../factory.dart';
 import '../models/models.dart';
 import '../services/services.dart';
 import 'reset.dart';
-import 'utils.dart';
+import '../utils/note_util.dart';
 
 class AccountInfoAction {
   final UserEntity user;
@@ -116,7 +116,8 @@ ThunkAction<AppState> verifyAccessTokenAction(
         if(isUserLevel){
           if (onAccountSucceed != null){
             store.dispatch(AccountInfoAction(
-              user: noteTransform(response),
+                user: UserEntity.fromJson(response.data),
+//              user: noteTransform(response),
             ));
             onAccountSucceed(UserEntity.fromJson(response.data));
           }
@@ -187,7 +188,8 @@ ThunkAction<AppState> accountEditAction(
 
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(AccountInfoAction(
-          user: noteTransform(response),
+          user: UserEntity.fromJson(response.data),
+//          user: noteTransform(response),
         ));
         if (onSucceed != null) onSucceed(UserEntity.fromJson(response.data));
       }
@@ -240,7 +242,8 @@ ThunkAction<AppState> accountEditImageAction(
       );
       if (response.code == MaApiResponse.codeOk) {
         store.dispatch(AccountInfoAction(
-          user: noteTransform(response),
+          user: UserEntity.fromJson(response.data),
+//          user: noteTransform(response),
         ));
         if (onSucceed != null) onSucceed();
       }

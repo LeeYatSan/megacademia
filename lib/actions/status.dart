@@ -194,7 +194,7 @@ ThunkAction<AppState> getPublishedStatusAction({
       );
 
       if (response.code == MaApiResponse.codeOk) {
-        final statuses = (response.data as List<dynamic>)
+        final statuses = (response.data[''] as List<dynamic>)
             .map<StatusEntity>((v) => StatusEntity.fromJson(v))
             .toList();
         store.dispatch(GetPublishedStatusAction(
@@ -228,7 +228,7 @@ ThunkAction<AppState> getLikedStatusAction({
 
       if (response.code == MaApiResponse.codeOk) {
 
-        final statuses = (response.data as List<dynamic>)
+        final statuses = (response.data[''] as List<dynamic>)
             .map<StatusEntity>((v) => StatusEntity.fromJson(v))
             .toList();
         store.dispatch(GetLikedStatusAction(

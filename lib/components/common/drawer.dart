@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:megacademia/pages/common/user_profile.dart';
+import 'package:megacademia/pages/common/profile.dart';
 import 'package:megacademia/pages/drawer/block_user.dart';
 import 'package:megacademia/pages/drawer/follower.dart';
 import 'package:megacademia/pages/drawer/following.dart';
+import 'package:megacademia/pages/drawer/like.dart';
 import 'package:megacademia/pages/drawer/mute_user.dart';
 import 'package:megacademia/pages/drawer/setting.dart';
 
@@ -39,15 +40,19 @@ class MaDrawer extends StatelessWidget{
           padding: EdgeInsets.zero,
           children: <Widget>[
             MaDrawerHeader(),
-            createMaListTile(context, MaIcon.me, '个人主页',
-                UserProfilePage(
-                  isSelf: true,
-                  user: accountState.user,
-                  accessToken: accountState.accessToken,)
-            ),
+//            createMaListTile(context, MaIcon.me, '个人主页',
+//                UserProfilePage(
+//                  isSelf: true,
+//                  user: accountState.user,
+//                  accessToken: accountState.accessToken,)
+//            ),
+            createMaListTile(context, MaIcon.me, '个人主页', ProfilePage(
+              isSelf: true,
+              user: accountState.user,
+            )),
             createMaListTile(context, MaIcon.mute_user, '静默用户', MuteUserPage()),
             createMaListTile(context, MaIcon.block_user, '黑名单', BlockUserPage()),
-            createMaListTile(context, MaIcon.collect, '收藏', Text('')),
+            createMaListTile(context, MaIcon.like, '我赞过的', LikePage()),
             createMaListTile(context, MaIcon.setting, '设置', SettingPage()),
           ],
         ),
@@ -117,10 +122,9 @@ class UserInfo extends StatelessWidget{
               onTap: (){
                 Navigator.pop(context);
                 AppNavigate.push(context,
-                    UserProfilePage(
+                    ProfilePage(
                       isSelf: true,
-                      user: vm.accountState.user,
-                      accessToken: vm.accountState.accessToken,)
+                      user: vm.accountState.user)
                 );
               },
             ),

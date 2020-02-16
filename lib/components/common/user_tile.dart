@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:megacademia/components/common/failed_snack_bar.dart';
 import 'package:megacademia/models/entity/relationship.dart';
-import 'package:megacademia/pages/common/user_profile.dart';
 import 'package:redux/redux.dart';
-import 'package:redux_thunk/redux_thunk.dart';
 
 import '../../models/models.dart';
 import '../../theme.dart';
@@ -32,9 +29,14 @@ class UserTile extends StatelessWidget {
         store.dispatch(relationshipAction(
           userId: user.id,
           onSucceed: (relationship){
+//            Navigator.of(context).push(MaterialPageRoute(
+//                builder: (context) => UserProfilePage(
+//                  user: user, accessToken: null, isSelf: false,
+//                )
+//            ));
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UserProfilePage(
-                  user: user, accessToken: null, isSelf: false,
+                builder: (context) => ProfilePage(
+                  user: user, isSelf: false,
                 )
             ));
           }));

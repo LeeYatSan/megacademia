@@ -8,6 +8,7 @@ import '../../models/models.dart';
 import '../../theme.dart';
 import '../../components/common/app_bar.dart';
 import '../../components/common/failed_snack_bar.dart';
+import '../../utils/note_util.dart';
 
 class EditUserInfoPage extends StatelessWidget {
 
@@ -67,7 +68,7 @@ class _BodyState extends State<_Body> {
   void initState() {
     super.initState();
     this._userDisplayNameEditingController.text = widget.vm.user.displayName;
-    this._noteEditingController.text = widget.vm.user.note;
+    this._noteEditingController.text = noteTransformStr(widget.vm.user.note);
   }
 
   void _submit() {
@@ -146,7 +147,7 @@ class _BodyState extends State<_Body> {
                 ),
               ),
               maxLength: 200,
-              maxLines: 12,
+              maxLines: 5,
               maxLengthEnforced: true,
               controller: _noteEditingController,
               focusNode: _noteFocus,

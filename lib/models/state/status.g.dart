@@ -34,17 +34,3 @@ Map<String, dynamic> _$StatusStateToJson(StatusState instance) =>
       'markStatus': instance.markStatus,
       'followingStatus': instance.followingStatus,
     };
-
-OthersStatusState _$OthersStatusStateFromJson(Map<String, dynamic> json) {
-  return OthersStatusState(
-    publishedStatus: (json['publishedStatus'] as List)
-        ?.map((e) =>
-            e == null ? null : StatusEntity.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  );
-}
-
-Map<String, dynamic> _$OthersStatusStateToJson(OthersStatusState instance) =>
-    <String, dynamic>{
-      'publishedStatus': instance.publishedStatus,
-    };
