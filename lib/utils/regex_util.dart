@@ -20,3 +20,16 @@ String noteTransformStr(String note){
   return note.replaceAll(new RegExp(r"<br\s*/>"),'\n')
               .replaceAll(new RegExp(r"\s*(<p>)|(</p>)|(<br>)"),'');
 }
+
+List<String> baiduNetDiskTrans(String shareLink){
+  List<String> res = List<String>();
+  var temp = shareLink.split(' ');
+  print('len: ${temp.length}');
+  var n = 0;
+  for(String curr in temp){
+    print('${n++}: $curr');
+  }
+  res.add(temp[1]);
+  res.add(temp[3]);
+  return res;
+}

@@ -9,7 +9,7 @@ import '../factory.dart';
 import '../models/models.dart';
 import '../services/services.dart';
 import 'reset.dart';
-import '../utils/note_util.dart';
+import '../utils/regex_util.dart';
 
 class AccountInfoAction {
   final UserEntity user;
@@ -251,24 +251,3 @@ ThunkAction<AppState> accountEditImageAction(
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
       }
     };
-
-
-//ThunkAction<AppState> accountSendMobileVerifyCodeAction({
-//  @required String type,
-//  @required String mobile,
-//  void Function() onSucceed,
-//  void Function(NoticeEntity) onFailed,
-//}) =>
-//        (Store<AppState> store) async {
-//      final wgService = await MaFactory().getMaService();
-//      final response = await wgService.post(
-//        '/account/send/mobile/verify/code',
-//        data: {'type': type, 'mobile': mobile},
-//      );
-//
-//      if (response.code == MaApiResponse.codeOk) {
-//        if (onSucceed != null) onSucceed();
-//      } else {
-//        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
-//      }
-//    };

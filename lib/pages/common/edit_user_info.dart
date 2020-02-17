@@ -8,7 +8,7 @@ import '../../models/models.dart';
 import '../../theme.dart';
 import '../../components/common/app_bar.dart';
 import '../../components/common/failed_snack_bar.dart';
-import '../../utils/note_util.dart';
+import '../../utils/regex_util.dart';
 
 class EditUserInfoPage extends StatelessWidget {
 

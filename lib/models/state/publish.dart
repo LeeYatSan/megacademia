@@ -11,11 +11,13 @@ class PublishState {
   final String text;
   final List<String> images;
   final List<String> videos;
+  final List<Emoji> emojis;
 
   PublishState({
     this.text = '',
     this.images = const [],
     this.videos = const [],
+    this.emojis = const [],
   });
 
   factory PublishState.fromJson(Map<String, dynamic> json) =>
@@ -27,10 +29,12 @@ class PublishState {
     String text,
     List<String> images,
     List<String> videos,
+    List<Emoji> emojis,
   }) =>
       PublishState(
         text: text ?? this.text,
         images: images ?? this.images,
         videos: videos ?? this.videos,
+        emojis: emojis ?? this.emojis,
       );
 }

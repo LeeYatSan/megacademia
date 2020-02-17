@@ -10,7 +10,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 import '../factory.dart';
 import '../models/models.dart';
 import '../services/services.dart';
-import '../utils/note_util.dart';
+import '../utils/regex_util.dart';
 
 class UserInfoAction {
   final UserEntity user;

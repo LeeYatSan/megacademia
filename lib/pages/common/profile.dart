@@ -426,7 +426,7 @@ class _BodyState extends State<_Body> {
             : user.displayName}的主页',
           style: TextStyle(fontWeight: FontWeight.w700),),
         leading: IconButton(
-          icon: Icon(MaIcon.back, color: Colors.black),
+          icon: Icon(MaIcon.back, color: MaTheme.maYellows),
           onPressed: () => Navigator.of(context).pop(),
         ),
         pinned: true,

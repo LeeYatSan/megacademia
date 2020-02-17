@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/models.dart';
 import '../../theme.dart';
@@ -11,6 +12,7 @@ import '../../actions/actions.dart';
 import '../../utils/number.dart';
 import '../../utils/date_until.dart';
 import '../../components/components.dart';
+
 
 class Status extends StatefulWidget {
   final StatusEntity status;
@@ -233,6 +235,14 @@ class _StatusState extends State<Status> {
         }));
   }
 
+  _launchURL(var url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   Widget _buildText(String text) {
     return Container(
       padding: EdgeInsets.all(5),
@@ -240,6 +250,10 @@ class _StatusState extends State<Status> {
       child: Html(
         data: text,
         onLinkTap: (url) {
+          final flutterWebview = new FlutterWebviewPlugin();
+          flutterWebview.onUrlChanged.listen((url) {
+            _launchURL(url);
+          });
           AppNavigate.push(
               context,
               WebviewScaffold(
@@ -257,24 +271,39 @@ class _StatusState extends State<Status> {
 
   Widget _buildCard(CardEntity card){
     final screenSize = MediaQuery.of(context).size;
-    return Container(
-      color: Colors.grey[50],
-      width: screenSize.width - 30,
-      padding: EdgeInsets.all(15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            card.title,
-            style: TextStyle(fontSize: 15),
-            softWrap: false,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 5),
-          Text(card.providerName, style: TextStyle(fontSize: 13, color: Colors.grey))
-        ],
+    return GestureDetector(
+      child: Container(
+        color: Colors.grey[50],
+        width: screenSize.width - 30,
+        padding: EdgeInsets.all(15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              card.title,
+              style: TextStyle(fontSize: 15),
+              softWrap: false,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 5),
+            Text(card.providerName, style: TextStyle(fontSize: 13, color: Colors.grey))
+          ],
+        ),
       ),
+      onTap: (){
+        AppNavigate.push(
+            context,
+            WebviewScaffold(
+              url: card.url,
+              appBar: createAppBar(context, card.title),
+              withZoom: true,
+              withLocalStorage: true,
+              clearCookies: true,
+              invalidUrlRegex:'^ctrip.*',
+            )
+        );
+      },
     );
   }
 

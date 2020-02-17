@@ -1,21 +1,16 @@
 export 'bootstrap.dart';
 export 'home.dart';
 export 'notification.dart';
-//export 'publish.dart';
 export 'tab.dart';
-//
+
 export 'common/images_player.dart';
-//export 'common/input.dart';
 export 'common/video_player.dart';
 export 'common/edit_user_info.dart';
 export 'common/profile.dart';
+export 'common/publish.dart';
 
-//export 'account/edit_mobile.dart';
 export 'account/login/login.dart';
 
-//export 'user/followers.dart';
-//export 'user/user.dart';
-//export 'user/users_following.dart';
 export 'drawer/setting.dart';
 export 'drawer/mute_user.dart';
 export 'drawer/block_user.dart';

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:megacademia/pages/common/publish.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -8,6 +9,7 @@ import '../components/components.dart';
 import '../models/models.dart';
 import '../actions/actions.dart';
 import '../theme.dart';
+import '../icons.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -31,7 +33,7 @@ class _HomePageState extends State<HomePage> {
         followingStatus: (store.state.status.followingStatus ?? [])
             .map<StatusEntity>((v) => store.state.status.statuses[v.toString()])
             .toList(),
-        allStatus: store.state.status.statuses.values.toList(),
+        allStatus: store.state.status.statuses.values.toList().reversed.toList(),
       ),
       builder: (context, vm) => Scaffold(
         body: DefaultTabController(
@@ -347,6 +349,39 @@ class _BodyState extends State<_Body> {
           unselectedLabelColor: Colors.black,
           labelStyle: TextStyle(fontWeight: FontWeight.w900),
         ),
+        actions: <Widget>[
+          GestureDetector(
+            child: Container(
+              margin: EdgeInsets.only(right: 30.0),
+              child: PopupMenuButton<int>(
+                child: Icon(MaIcon.send, color: Colors.black,),
+                onSelected: (int value){
+                  AppNavigate.push(
+                      context,
+                      PublishPage(type: value, ),
+                      callBack: (data){
+                        _refreshFollowingStatuses();
+                        _refreshAllStatuses();
+                      });
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+                  PopupMenuItem<int>(
+                    value: StatusType.textStatus,
+                    child: Text('文字'),
+                  ),
+                  PopupMenuItem<int>(
+                    value: StatusType.imageStatus,
+                    child: Text('图片'),
+                  ),
+                  PopupMenuItem<int>(
+                    value: StatusType.videoStatus,
+                    child: Text('视频'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
         backgroundColor: Colors.white,
       ),
       drawer: MaDrawer(),

@@ -8,7 +8,9 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="megacademia"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
+        >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -19,6 +21,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <data android:scheme="bdnetdisk"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

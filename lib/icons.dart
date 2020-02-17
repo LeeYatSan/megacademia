@@ -25,4 +25,5 @@ class MaIcon{
   static var search = IconData(0xe608, fontFamily: MaGlobalValue.fontFamily);
   static var setting = IconData(0xe606, fontFamily: MaGlobalValue.fontFamily);
   static var weather = IconData(0xe62f, fontFamily: MaGlobalValue.fontFamily);
+  static var baiduNetDisk = IconData(0xe600, fontFamily: MaGlobalValue.fontFamily);
 }

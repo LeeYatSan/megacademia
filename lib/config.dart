@@ -97,10 +97,11 @@ class MaApi {
     return '$maApiSubBaseUrl/statuses/$arg'; // 删除某个嘟文
   }
   static String PublishStatuses(arg) {
-    return '$maApiSubBaseUrl/statuses/$arg'; // 删除某个嘟文
+    return '$maApiSubBaseUrl/statuses/$arg'; // 发表某个嘟文
   }
   static String SomeonesStatuses(arg) {
     return '$maApiSubBaseUrl/accounts/$arg/statuses'; // 查看某人嘟文
   }
   static String PublicStatuses = '$maApiSubBaseUrl/timelines/public'; // 查看公共嘟文
+  static String ShortLink = 'http://lnurl.cn/tcn/api';// 生成短链接
 }

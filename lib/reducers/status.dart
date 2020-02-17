@@ -185,12 +185,16 @@ StatusState _getFollowingStatus(StatusState state, GetFollowingStatusAction acti
 
 StatusState _getPublicStatus(StatusState state, GetPublicStatusAction action) {
   final statuses = Map<String, StatusEntity>.from(state.statuses);
+//  final Map<String, StatusEntity> statuses = Map.fromIterable(
+//    action.statuses,
+//    key: (v) => (v as StatusEntity).id.toString(),
+//    value: (v) => v,
+//  );
   statuses.addAll(Map.fromIterable(
     action.statuses,
     key: (v) => (v as StatusEntity).id.toString(),
     value: (v) => v,
   ));
-
   return state.copyWith(
     statuses: statuses,
   );
