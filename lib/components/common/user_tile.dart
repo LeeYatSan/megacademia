@@ -8,6 +8,7 @@ import '../../models/models.dart';
 import '../../theme.dart';
 import '../../actions/actions.dart';
 import '../../pages/pages.dart';
+import '../../utils/regex_util.dart';
 
 class UserTile extends StatelessWidget {
   final UserEntity user;
@@ -57,7 +58,8 @@ class UserTile extends StatelessWidget {
           ),
         ],
       ),
-      subtitle: Text(user.note, maxLines: 1, softWrap: true,),
+      subtitle: Text(type == 4 ? '@${user.username}' : noteTransformStr(user.note),
+        maxLines: 1, softWrap: true,),
       trailing: _getTrailing(context),
     );
   }
@@ -94,6 +96,41 @@ class UserTile extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),),
             onPressed: (){unblockUser(context, user);},
+          ),
+        );
+      }break;
+      case 4:{
+        trailing = Container(
+          padding: EdgeInsets.all(5.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                width: 52,
+                height: 25,
+                child: FlatButton(
+                  color: Colors.greenAccent,
+                  child: Text('同意', style: TextStyle(color: Colors.white,
+                      fontSize: 10, fontWeight: FontWeight.w700),),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),),
+                  onPressed: (){agreeFollowing(context, user);},
+                ),
+              ),
+              SizedBox(width: 1,),
+              Container(
+                width: 52,
+                height: 25,
+                child: FlatButton(
+                  color: Colors.redAccent,
+                  child: Text('拒绝', style: TextStyle(color: Colors.white,
+                      fontSize: 10, fontWeight: FontWeight.w700),),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),),
+                  onPressed: (){disagreeFollowing(context, user);},
+                ),
+              ),
+            ],
           ),
         );
       }break;
@@ -185,6 +222,26 @@ void blockUser(BuildContext context, UserEntity user) {
 
 void unblockUser(BuildContext context, UserEntity user) {
   StoreProvider.of<AppState>(context).dispatch(unblockUserAction(
+    userId: user.id,
+    onFailed: (notice) => Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(notice.message),
+      duration: notice.duration,
+    )),
+  ));
+}
+
+void agreeFollowing(BuildContext context, UserEntity user) {
+  StoreProvider.of<AppState>(context).dispatch(agreeFollowingAction(
+    userId: user.id,
+    onFailed: (notice) => Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(notice.message),
+      duration: notice.duration,
+    )),
+  ));
+}
+
+void disagreeFollowing(BuildContext context, UserEntity user) {
+  StoreProvider.of<AppState>(context).dispatch(disagreeFollowingAction(
     userId: user.id,
     onFailed: (notice) => Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(notice.message),

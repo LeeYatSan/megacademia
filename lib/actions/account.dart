@@ -9,7 +9,6 @@ import '../factory.dart';
 import '../models/models.dart';
 import '../services/services.dart';
 import 'reset.dart';
-import '../utils/regex_util.dart';
 
 class AccountInfoAction {
   final UserEntity user;

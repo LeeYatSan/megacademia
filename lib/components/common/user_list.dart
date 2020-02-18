@@ -10,7 +10,7 @@ import 'user_tile.dart';
 
 
 class UserList extends StatefulWidget {
-  final int type; // 0->usersFollowing 1->followers 2->muteUsers 3->blockedUsers
+  final int type; // 0->usersFollowing 1->followers 2->muteUsers 3->blockedUsers 4->followRequest
 
   UserEntity user;
 
@@ -63,6 +63,9 @@ class _UserListState extends State<UserList> {
       }break;
       case 3:{
         res = state.user.blockedUsers;
+      }break;
+      case 4:{
+        res = state.notification.requestFollowAccounts;
       }break;
     }
     return res;
@@ -133,7 +136,6 @@ class _BodyState extends State<_Body> {
       completer?.complete();
       return;
     }
-
     if (!refresh) {
       setState(() {
         _isLoading = true;
@@ -147,7 +149,7 @@ class _BodyState extends State<_Body> {
 
     switch(_type){
       case 0:{
-        _loadFolloweringUsers(widget.vm.user.id, offset, refresh, completer);
+        _loadFollowingUsers(widget.vm.user.id, offset, refresh, completer);
       }break;
       case 1:{
         _loadFollowers(widget.vm.user.id, offset, refresh, completer);
@@ -157,6 +159,9 @@ class _BodyState extends State<_Body> {
       }break;
       case 3:{
         _loadBlockedUsers(widget.vm.user.id, offset, refresh, completer);
+      }break;
+      case 4:{
+        _loadFollowingRequestUsers(refresh, completer);
       }break;
     }
   }
@@ -172,7 +177,7 @@ class _BodyState extends State<_Body> {
     return completer.future;
   }
 
-  void _loadFolloweringUsers(String id, int offset,
+  void _loadFollowingUsers(String id, int offset,
       bool refresh, Completer<Null> completer){
     widget.store.dispatch(getFollowingListAction(
       userId: widget.vm.user.id,
@@ -192,9 +197,7 @@ class _BodyState extends State<_Body> {
             _isLoading = false;
           });
         }
-
         completer?.complete();
-
         createFailedSnackBar(context, notice: notice);
       },
     ));
@@ -220,9 +223,7 @@ class _BodyState extends State<_Body> {
             _isLoading = false;
           });
         }
-
         completer?.complete();
-
         createFailedSnackBar(context, notice: notice);
       },
     ));
@@ -248,9 +249,7 @@ class _BodyState extends State<_Body> {
             _isLoading = false;
           });
         }
-
         completer?.complete();
-
         createFailedSnackBar(context, notice: notice);
       },
     ));
@@ -279,6 +278,28 @@ class _BodyState extends State<_Body> {
 
         completer?.complete();
 
+        createFailedSnackBar(context, notice: notice);
+      },
+    ));
+  }
+
+  void _loadFollowingRequestUsers(bool refresh, Completer<Null> completer){
+    widget.store.dispatch(getFollowingRequestAction(
+      onSucceed: () {
+        if (!refresh) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        completer?.complete();
+      },
+      onFailed: (notice) {
+        if (!refresh) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        completer?.complete();
         createFailedSnackBar(context, notice: notice);
       },
     ));

@@ -1,4 +1,3 @@
-import 'package:megacademia/actions/actions.dart';
 import 'package:meta/meta.dart';
 import 'package:dio/dio.dart';
 import 'package:megacademia/config.dart';
@@ -58,7 +57,6 @@ ThunkAction<AppState> getNodeCustomEmojisAction(
 ThunkAction<AppState> publishAction(
     {
       String status,
-      String inReplyToId,
       List<String> mediaIds,
       String visibility,
       void Function() onSucceed,
@@ -73,7 +71,6 @@ ThunkAction<AppState> publishAction(
         headers: {'Authorization': state.accessToken,},
         data: {
           'status' : status ?? '',
-          'in_reply_to_id' : inReplyToId,
           'media_ids' : mediaIds,
           'visibility' : visibility,
         }

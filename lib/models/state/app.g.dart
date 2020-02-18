@@ -23,6 +23,10 @@ AppState _$AppStateFromJson(Map<String, dynamic> json) {
     status: json['status'] == null
         ? null
         : StatusState.fromJson(json['status'] as Map<String, dynamic>),
+    notification: json['notification'] == null
+        ? null
+        : NotificationState.fromJson(
+            json['notification'] as Map<String, dynamic>),
   );
 }
 
@@ -34,4 +38,5 @@ Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
       'publish': instance.publish,
       'user': instance.user,
       'status': instance.status,
+      'notification': instance.notification,
     };

@@ -1,15 +1,11 @@
-import 'dart:io';
 import 'package:megacademia/config.dart';
 import 'package:meta/meta.dart';
-import 'package:path/path.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
-import 'package:dio/dio.dart';
 
 import '../factory.dart';
 import '../models/models.dart';
 import '../services/services.dart';
-import 'user.dart';
 
 class DeleteStatusAction {
   final StatusEntity status;
@@ -118,45 +114,6 @@ class GetPublicStatusAction {
     this.refresh = false,
   });
 }
-
-//ThunkAction<AppState> publishPostAction({
-//  String text,
-//  List<String> images,
-//  List<String> videos,
-//  void Function(int) onSucceed,
-//  void Function(NoticeEntity) onFailed,
-//}) =>
-//        (Store<AppState> store) async {
-//      final wgService = await MaFactory().getMaService();
-//
-//      final data = FormData.fromMap({
-//        'type': type.toString().split('.')[1],
-//        'text': text,
-//      });
-////      if (type == PostType.image) {
-////        for (var i = 0; i < images.length; i++) {
-////          data['file${i + 1}'] =
-////              UploadFileInfo(File(images[i]), basename(images[i]));
-////        }
-////      } else if (type == PostType.video) {
-////        for (var i = 0; i < videos.length; i++) {
-////          data['file${i + 1}'] =
-////              UploadFileInfo(File(videos[i]), basename(videos[i]));
-////        }
-////      }
-//
-//      final response = await wgService.postForm(
-//        '/post/create',
-//        data: data,
-//      );
-//
-//      if (response.code == MaApiResponse.codeOk) {
-//        final id = response.data['id'] as int;
-//        if (onSucceed != null) onSucceed(id);
-//      } else {
-//        if (onFailed != null) onFailed(NoticeEntity(message: response.message));
-//      }
-//    };
 
 ThunkAction<AppState> deleteStatusAction({
   @required StatusEntity status,

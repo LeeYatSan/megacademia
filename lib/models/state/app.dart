@@ -1,4 +1,5 @@
 import 'package:megacademia/models/models.dart';
+import 'package:megacademia/models/state/notification.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,6 +20,7 @@ class AppState {
   final PublishState publish;
   final UserState user;
   final StatusState status;
+  final NotificationState notification;
 
   AppState({
     String version,
@@ -28,13 +30,15 @@ class AppState {
     PublishState publish,
     UserState user,
     StatusState status,
+    NotificationState notification,
   })  : this.version = version ?? MaConfig.packageInfo.version,
         this.clientId = clientId ?? '',
         this.clientSecret = clientSecret ?? '',
         this.account = account ?? AccountState(),
         this.publish = publish ?? PublishState(),
         this.user = user ?? UserState(),
-        this.status = status ?? StatusState();
+        this.status = status ?? StatusState(),
+        this.notification = notification ?? NotificationState();
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
       _$AppStateFromJson(json);
@@ -49,6 +53,7 @@ class AppState {
     PublishState publish,
     UserState user,
     StatusState status,
+    NotificationState notification
   }) =>
       AppState(
         version: version ?? this.version,
@@ -58,5 +63,6 @@ class AppState {
         publish: publish ?? this.publish,
         user: user ?? this.user,
         status: status ?? this.status,
+        notification: notification ?? this.notification,
       );
 }

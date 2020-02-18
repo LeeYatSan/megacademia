@@ -1,3 +1,5 @@
+import 'package:megacademia/reducers/notification.dart';
+
 import '../models/models.dart';
 import '../actions/actions.dart';
 import 'account.dart';
@@ -23,6 +25,7 @@ AppState appReducer(AppState state, action) {
       publish: publishReducer(state.publish, action),
       status: statusReducer(state.status, action),
       user: userReducer(state.user, action),
+      notification: notificationReducer(state.notification, action),
     );
   }
 }

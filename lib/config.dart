@@ -43,6 +43,7 @@ class MaApi {
   static String LocalTimeLine = '$maApiSubBaseUrl/timelines/public?local=true'; // 本站时间线
   static String OwnerAccount = '$maApiSubBaseUrl/accounts/verify_credentials'; // 该账号的信息
   static String Notifications = '$maApiSubBaseUrl/notifications'; // 获取用户的通知信息
+  static String FollowingRequests = '$maApiSubBaseUrl/follow_requests'; // 获取关注请求信息
   static String PushNewTooT = '$maApiSubBaseUrl/statuses'; // 发送一个新文章
   static String UpdateAccount = '$maApiSubBaseUrl/accounts/update_credentials'; // 更新用户信息
   static String Media = '$maApiSubBaseUrl/media'; // 媒体文件
@@ -102,6 +103,15 @@ class MaApi {
   static String SomeonesStatuses(arg) {
     return '$maApiSubBaseUrl/accounts/$arg/statuses'; // 查看某人嘟文
   }
+  static String AgreeFollowing(arg) {
+    return '$maApiSubBaseUrl/follow_requests/$arg/authorize'; // 同意关注
+  }
+  static String DisagreeFollowing(arg) {
+    return '$maApiSubBaseUrl/follow_requests/$arg/reject'; // 拒绝关注
+  }
   static String PublicStatuses = '$maApiSubBaseUrl/timelines/public'; // 查看公共嘟文
   static String ShortLink = 'http://lnurl.cn/tcn/api';// 生成短链接
+  static String DismissSingleNotification(arg) {
+    return '$maApiSubBaseUrl/notifications/$arg/dismiss'; // 删除某条通知
+  }
 }

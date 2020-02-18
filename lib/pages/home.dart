@@ -324,8 +324,7 @@ class _BodyState extends State<_Body> {
             }
           },
         ),
-      ))
-          .toList(),
+      )).toList(),
     );
   }
 

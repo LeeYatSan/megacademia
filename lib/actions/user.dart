@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:megacademia/actions/account.dart';
 import 'package:megacademia/config.dart';
 import 'package:megacademia/models/entity/relationship.dart';
@@ -10,7 +8,6 @@ import 'package:redux_thunk/redux_thunk.dart';
 import '../factory.dart';
 import '../models/models.dart';
 import '../services/services.dart';
-import '../utils/regex_util.dart';
 
 class UserInfoAction {
   final UserEntity user;

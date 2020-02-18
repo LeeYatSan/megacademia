@@ -32,22 +32,26 @@ class StatusVisibility{
 
 class PublishPage extends StatefulWidget {
   final int type;
+  UserEntity inReplyTo;
 
   PublishPage({
     Key key,
-    @required this.type
+    @required this.type,
+    this.inReplyTo,
   }) : super(key: key);
 
   @override
-  _PublishPageState createState() => _PublishPageState(type: type);
+  _PublishPageState createState() => _PublishPageState(type: type, inReplyTo: inReplyTo);
 }
 
 class _PublishPageState extends State<PublishPage> {
   final _bodyKey = GlobalKey<_BodyState>();
   int type;
+  UserEntity inReplyTo;
 
   _PublishPageState({
-    @required this.type
+    @required this.type,
+    this.inReplyTo
   });
 
   @override
@@ -55,7 +59,8 @@ class _PublishPageState extends State<PublishPage> {
     return StoreConnector<AppState, _ViewModel>(
       converter: (store) => _ViewModel(
         type: type,
-        text: store.state.publish.text,
+        text: inReplyTo == null ? store.state.publish.text :
+        '@${inReplyTo.username}${store.state.publish.text} ',
         images: store.state.publish.images,
         videos: store.state.publish.videos,
       ),
@@ -77,7 +82,8 @@ class _PublishPageState extends State<PublishPage> {
                 child: Row(
                   children: <Widget>[
                     Icon(MaIcon.send, color: Colors.black,),
-                    Text(StatusType.names[_bodyKey.currentState == null ? type : _bodyKey.currentState.widget.vm.type]),
+                    Text(StatusType.names[_bodyKey.currentState == null
+                        ? type : _bodyKey.currentState.widget.vm.type]),
                   ],
                 ),
                 onSelected: (int value){

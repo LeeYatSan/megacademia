@@ -12,6 +12,7 @@ import '../../actions/actions.dart';
 import '../../utils/number.dart';
 import '../../utils/date_until.dart';
 import '../../components/components.dart';
+import '../../icons.dart';
 
 
 class Status extends StatefulWidget {
@@ -396,6 +397,13 @@ class _StatusState extends State<Status> {
     }
   }
 
+  void _reply(_ViewModel vm){
+    AppNavigate.push(
+        context,
+        PublishPage(type: 0, inReplyTo: vm.creator,),
+    );
+  }
+
   Widget _buildFooter(BuildContext context, _ViewModel vm) {
     final screenSize = MediaQuery.of(context).size;
     return Container(
@@ -513,6 +521,23 @@ class _StatusState extends State<Status> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
+                Visibility(
+                  visible: widget.status.account.id != vm.accountState.user.id,
+                  child: GestureDetector(
+                    onTap: Feedback.wrapForTap(
+                          () => _reply(vm),
+                      context,
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: Icon(
+                        Icons.comment,
+                        size: 15,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+                  ),
+                ),
                 Visibility(
                   visible: widget.status.account.id == vm.accountState.user.id,
                   child: GestureDetector(
