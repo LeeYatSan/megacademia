@@ -92,6 +92,7 @@ class _PublishPageState extends State<PublishPage> {
                   });
                   _bodyKey.currentState.setState(() {
                     _bodyKey.currentState.widget.vm.type = value;
+                    _bodyKey.currentState.widget.vm.text = _bodyKey.currentState._textEditingController.text;
                   });
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
@@ -263,7 +264,7 @@ class _BodyState extends State<_Body> {
 
           widget.store.dispatch(
               publishAction(
-                status: widget.vm.text,
+                status: _textEditingController.text,
                 mediaIds: ids,
                 visibility: StatusVisibility.value[widget.vm.visibility],
                 onSucceed: () {

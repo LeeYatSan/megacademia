@@ -27,6 +27,12 @@ AppState _$AppStateFromJson(Map<String, dynamic> json) {
         ? null
         : NotificationState.fromJson(
             json['notification'] as Map<String, dynamic>),
+    discovery: json['discovery'] == null
+        ? null
+        : DiscoveryState.fromJson(json['discovery'] as Map<String, dynamic>),
+    search: json['search'] == null
+        ? null
+        : SearchState.fromJson(json['search'] as Map<String, dynamic>),
   );
 }
 
@@ -39,4 +45,6 @@ Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
       'user': instance.user,
       'status': instance.status,
       'notification': instance.notification,
+      'discovery': instance.discovery,
+      'search': instance.search,
     };

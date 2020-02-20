@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'config.dart';
+import 'theme.dart';
 
 class MaIcon{
   static var me = IconData(0xe60c, fontFamily: MaGlobalValue.fontFamily);
@@ -26,4 +27,12 @@ class MaIcon{
   static var setting = IconData(0xe606, fontFamily: MaGlobalValue.fontFamily);
   static var weather = IconData(0xe62f, fontFamily: MaGlobalValue.fontFamily);
   static var baiduNetDisk = IconData(0xe600, fontFamily: MaGlobalValue.fontFamily);
+
+  static var rank = [
+    Icon(Icons.looks_one, color: MaTheme.redDark,),
+    Icon(Icons.looks_two, color: MaTheme.redNormal,),
+    Icon(Icons.looks_3, color: MaTheme.redNormal,),
+    Icon(Icons.looks_4, color: MaTheme.maYellows,),
+    Icon(Icons.looks_5, color: MaTheme.maYellows,),
+  ];
 }

@@ -1,5 +1,7 @@
 import 'package:megacademia/models/models.dart';
+import 'package:megacademia/models/state/discovery.dart';
 import 'package:megacademia/models/state/notification.dart';
+import 'package:megacademia/models/state/search.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,6 +23,8 @@ class AppState {
   final UserState user;
   final StatusState status;
   final NotificationState notification;
+  final DiscoveryState discovery;
+  final SearchState search;
 
   AppState({
     String version,
@@ -31,6 +35,8 @@ class AppState {
     UserState user,
     StatusState status,
     NotificationState notification,
+    DiscoveryState discovery,
+    SearchState search,
   })  : this.version = version ?? MaConfig.packageInfo.version,
         this.clientId = clientId ?? '',
         this.clientSecret = clientSecret ?? '',
@@ -38,7 +44,9 @@ class AppState {
         this.publish = publish ?? PublishState(),
         this.user = user ?? UserState(),
         this.status = status ?? StatusState(),
-        this.notification = notification ?? NotificationState();
+        this.notification = notification ?? NotificationState(),
+        this.discovery = discovery ?? DiscoveryState(),
+        this.search = search ?? SearchState();
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
       _$AppStateFromJson(json);
@@ -53,7 +61,9 @@ class AppState {
     PublishState publish,
     UserState user,
     StatusState status,
-    NotificationState notification
+    NotificationState notification,
+    DiscoveryState discovery,
+    SearchState search,
   }) =>
       AppState(
         version: version ?? this.version,
@@ -64,5 +74,7 @@ class AppState {
         user: user ?? this.user,
         status: status ?? this.status,
         notification: notification ?? this.notification,
+        discovery: discovery ?? this.discovery,
+        search: search ?? this.search,
       );
 }

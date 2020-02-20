@@ -1,4 +1,6 @@
+import 'package:megacademia/reducers/discovery.dart';
 import 'package:megacademia/reducers/notification.dart';
+import 'package:megacademia/reducers/search.dart';
 
 import '../models/models.dart';
 import '../actions/actions.dart';
@@ -26,6 +28,8 @@ AppState appReducer(AppState state, action) {
       status: statusReducer(state.status, action),
       user: userReducer(state.user, action),
       notification: notificationReducer(state.notification, action),
+      discovery: discoveryReducer(state.discovery, action),
+      search: searchReducer(state.search, action),
     );
   }
 }

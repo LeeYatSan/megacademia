@@ -1,161 +1,3 @@
-//import 'dart:async';
-//import 'package:flutter/material.dart';
-//import 'package:meta/meta.dart';
-//import 'package:redux/redux.dart';
-//import 'package:flutter_redux/flutter_redux.dart';
-//
-//import '../actions/actions.dart';
-//import '../models/models.dart';
-//import '../components/components.dart';
-//
-//class NotificationPage extends StatefulWidget {
-//  NotificationPage({
-//    Key key,
-//  }) : super(key: key);
-//
-//  @override
-//  NotificationState createState() => NotificationState();
-//}
-//
-//class NotificationState extends State<NotificationPage> with AutomaticKeepAliveClientMixin {
-//  bool _isLoading = false;
-//  final scrollController = ScrollController();
-//  @override
-//  bool get wantKeepAlive => true;
-//
-//  @override
-//  void initState() {
-//    super.initState();
-//    scrollController.addListener(_scrollListener);
-//    _loadNotification();
-//  }
-//
-//  @override
-//  void dispose() {
-//    scrollController.removeListener(_scrollListener);
-//    scrollController.dispose();
-//
-//    super.dispose();
-//  }
-//
-//  void _scrollListener() {
-//    if (scrollController.position.pixels ==
-//        scrollController.position.maxScrollExtent) {
-//      _loadNotification();
-//    }
-//  }
-//
-//  void _loadNotification({
-//    bool refresh = false,
-//    Completer<Null> completer,
-//  }) {
-//    final store = StoreProvider.of<AppState>(context);
-//
-//    if (_isLoading) {
-//      completer?.complete();
-//      return;
-//    }
-//
-//    if (!refresh) {
-//      setState(() {
-//        _isLoading = true;
-//      });
-//    }
-//
-//    store.dispatch(getNotificationsAction(
-//      onSucceed: (){
-//        if (!refresh) {
-//          setState(() {
-//            _isLoading = false;
-//          });
-//        }
-//        completer?.complete();
-//      },
-//      onFailed: (notice) {
-//        if (!refresh) {
-//          setState(() {
-//            _isLoading = false;
-//          });
-//        }
-//        completer?.complete();
-//        createFailedSnackBar(context, notice: notice);
-//      },
-//    ));
-//  }
-//
-//  Future<Null> _refreshNotification() {
-//    final completer = Completer<Null>();
-//    _loadNotification(
-//      refresh: true,
-//      completer: completer,
-//    );
-//    return completer.future;
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//        appBar: AppBar(
-//          title: Text('通知', style: TextStyle(fontWeight: FontWeight.w700),),
-//          centerTitle: true,
-//          backgroundColor: Colors.white,
-//        ),
-//        body: StoreConnector<AppState, _ViewModel>(
-//          converter: (store) => _ViewModel(
-//            notifications: store.state.notification.notifications,
-//            requestFollowAccounts: store.state.notification.requestFollowAccounts,
-//          ),
-//          builder: (context, vm) => SafeArea(
-//            child: Stack(
-//              children: <Widget>[
-//                RefreshIndicator(
-//                  onRefresh: _refreshNotification,
-//                  child: CustomScrollView(
-//                    key: PageStorageKey<String>('likeStatus'),
-//                    physics: const AlwaysScrollableScrollPhysics(),
-//                    slivers: <Widget>[
-//                      SliverList(
-//                        delegate: SliverChildBuilderDelegate(
-//                              (context, index) => NotificationItem(
-//                                key: Key(vm.notifications.length != 0 ?
-//                                  vm.notifications[index].id :
-//                                  vm.requestFollowAccounts[index-vm.notifications.length].id),
-//                                user: vm.notifications.length != 0 ?
-//                                  vm.notifications[index].account :
-//                                  vm.requestFollowAccounts[index-vm.notifications.length],
-//                                notification: index < vm.notifications.length ?
-//                                  vm.notifications[index] : null,
-//                          ),
-//                          childCount: vm.notifications.length + vm.requestFollowAccounts.length,
-//                        ),
-//                      ),
-//                    ],
-//                  ),
-//                ),
-//                Visibility(
-//                  visible: _isLoading,
-//                  child: Center(
-//                    child: CircularProgressIndicator(),
-//                  ),
-//                ),
-//              ],
-//            ),
-//          ),
-//        ),
-//    );
-//  }
-//}
-//
-//class _ViewModel {
-//  final List<NotificationEntity> notifications;
-//  final List<UserEntity> requestFollowAccounts;
-//
-//  _ViewModel({
-//    @required this.notifications,
-//    @required this.requestFollowAccounts,
-//  });
-//}
-
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
@@ -234,155 +76,32 @@ class _Body extends StatefulWidget {
 class _BodyState extends State<_Body> {
   static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   final scrollController = ScrollController();
-//  var _isLoadingFollowingStatus = false;
-//  var _isLoadingAllStatus = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    scrollController.addListener(_scrollListener);
-
-//    _loadFollowingStatus(recent: true, more: false);
-//    _loadNotifications(recent: true, more: false);
-  }
-
-  @override
-  void dispose() {
-    scrollController.removeListener(_scrollListener);
-    scrollController.dispose();
-
-    super.dispose();
-  }
-
-  void _scrollListener() {
-    final index = DefaultTabController.of(context).index;
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
-      if (index == 0) {
-//        _loadFollowingStatus();
-      } else if (index == 1) {
-//        _loadNotifications();
-      }
-    }
-  }
-
-//  void _loadFollowingStatus({
-//    bool recent = false,
-//    bool more = true,
-//    bool refresh = false,
-//    Completer<Null> completer,
-//  }) {
-//    if (_isLoadingFollowingStatus) {
-//      completer?.complete();
-//      return;
-//    }
 //
-//    if (!refresh) {
-//      setState(() {
-//        _isLoadingFollowingStatus = true;
-//      });
-//    }
+//  @override
+//  void initState() {
+//    super.initState();
 //
-//    String beforeId;
-//    if (more && widget.vm.followingStatus.isNotEmpty) {
-//      beforeId = widget.vm.followingStatus.last.id;
-//    }
-//    String afterId;
-//    if (recent && widget.vm.followingStatus.isNotEmpty) {
-//      afterId = widget.vm.followingStatus.first.id;
-//    }
-//    widget.store.dispatch(getFollowingStatusAction(
-//      beforeId: beforeId,
-//      afterId: afterId,
-//      refresh: refresh,
-//      onSucceed: (statuses) {
-//        if (!refresh) {
-//          setState(() {
-//            _isLoadingFollowingStatus = false;
-//          });
-//        }
+//    scrollController.addListener(_scrollListener);
+//  }
 //
-//        completer?.complete();
-//      },
-//      onFailed: (notice) {
-//        if (!refresh) {
-//          setState(() {
-//            _isLoadingFollowingStatus = false;
-//          });
-//        }
+//  @override
+//  void dispose() {
+//    scrollController.removeListener(_scrollListener);
+//    scrollController.dispose();
 //
-//        completer?.complete();
-//
-//        createFailedSnackBar(context, notice: notice);
-//      },
-//    ));
+//    super.dispose();
 //  }
 
-//  void _loadNotifications({
-//    bool recent = false,
-//    bool more = true,
-//    bool refresh = false,
-//    Completer<Null> completer,
-//  }) {
-//    if (_isLoadingAllStatus) {
-//      completer?.complete();
-//      return;
+//  void _scrollListener() {
+//    final index = DefaultTabController.of(context).index;
+//    if (scrollController.position.pixels ==
+//        scrollController.position.maxScrollExtent) {
+//      if (index == 0) {
+////        _loadFollowingStatus();
+//      } else if (index == 1) {
+////        _loadNotifications();
+//      }
 //    }
-//
-//    if (!refresh) {
-//      setState(() {
-//        _isLoadingAllStatus = true;
-//      });
-//    }
-//
-//    String beforeId;
-//    if (more && widget.vm.allStatus.isNotEmpty) {
-//      beforeId = widget.vm.allStatus.last.id;
-//    }
-//    String afterId;
-//    if (recent && widget.vm.allStatus.isNotEmpty) {
-//      afterId = widget.vm.allStatus.first.id;
-//    }
-//    widget.store.dispatch(getPublicStatusAction(
-//      limit: 10,
-//      beforeId: beforeId,
-//      afterId: afterId,
-//      refresh: refresh,
-//      onSucceed: (posts) {
-//        if (!refresh) {
-//          setState(() {
-//            _isLoadingAllStatus = false;
-//          });
-//        }
-//
-//        completer?.complete();
-//      },
-//      onFailed: (notice) {
-//        if (!refresh) {
-//          setState(() {
-//            _isLoadingAllStatus = false;
-//          });
-//        }
-//
-//        completer?.complete();
-//
-//        Scaffold.of(context).showSnackBar(SnackBar(
-//          content: Text(notice.message),
-//          duration: notice.duration,
-//        ));
-//      },
-//    ));
-//  }
-
-//  Future<Null> _refreshFollowingStatuses() {
-//    final completer = Completer<Null>();
-//    _loadFollowingStatus(
-//      more: false,
-//      refresh: true,
-//      completer: completer,
-//    );
-//    return completer.future;
 //  }
 
   Widget _buildNotifications(BuildContext context) {

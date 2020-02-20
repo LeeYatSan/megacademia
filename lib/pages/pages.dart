@@ -17,3 +17,5 @@ export 'drawer/block_user.dart';
 export 'drawer/following.dart';
 export 'drawer/follower.dart';
 export 'drawer/like.dart';
+
+export 'search/search_delegate.dart';
