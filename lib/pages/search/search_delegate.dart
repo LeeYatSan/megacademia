@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:megacademia/components/common/failed_snack_bar.dart';
 import 'package:megacademia/pages/search/search_result_general.dart';
-import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../../models/models.dart';

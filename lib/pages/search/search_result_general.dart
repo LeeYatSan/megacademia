@@ -3,16 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/components.dart';
 import '../../models/models.dart';
 import '../../actions/actions.dart';
 import '../../theme.dart';
 import '../../pages/pages.dart';
-import '../../icons.dart';
-import '../search/search_delegate.dart';
 
 class SearchResultGeneral extends StatefulWidget {
 
