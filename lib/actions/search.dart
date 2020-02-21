@@ -28,7 +28,7 @@ ThunkAction<AppState> getSearchResultAction(
       var response = await maService.get(
         MaApi.Search,
         headers: {'Authorization': state.accessToken,},
-        data: {'q' : query},
+        queryParameters: {'q' : query},
       );
 
       if (response.code == MaApiResponse.codeOk) {

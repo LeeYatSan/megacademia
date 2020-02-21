@@ -115,5 +115,5 @@ class MaApi {
     return '$maApiSubBaseUrl/notifications/$arg/dismiss'; // 删除某条通知
   }
   static String Trends = '$maApiSubBaseUrl/trends'; // 获取趋势
-  static String Search = '${MaConfig.maApiBaseUrl}/api/v2/search';// 搜索
+  static String Search = '/api/v2/search';// 搜索
 }

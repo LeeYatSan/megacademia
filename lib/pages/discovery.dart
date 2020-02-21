@@ -280,6 +280,7 @@ class _BodyState extends State<_Body> {
                                 Icon(Icons.language, color: MaTheme.greyNormal, size: 20,),
                                 SizedBox(width: 5),
                                 Text(entry.value.name,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(color: MaTheme.greyNormal, fontSize: 15),),
                               ],
                             )

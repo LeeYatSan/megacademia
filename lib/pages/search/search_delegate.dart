@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:megacademia/components/common/failed_snack_bar.dart';
+import 'package:megacademia/pages/search/search_result_general.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import '../../components/components.dart';
 import '../../models/models.dart';
 import '../../actions/actions.dart';
 import '../../theme.dart';
@@ -27,7 +28,7 @@ class SearchBarDelegate extends SearchDelegate<String> {
       IconButton(
         icon: Icon(Icons.clear, size: 20,),
         onPressed: () {
-          query = "";
+          query = '';
           showSuggestions(context);
         },
       ),
@@ -42,6 +43,10 @@ class SearchBarDelegate extends SearchDelegate<String> {
 
   @override
   void showResults(BuildContext context){
+    if(query == ''){
+      query = tags.isEmpty ? 'megacademia' : tags[0].name;
+    }
+    query = query.trim();
     super.showResults(context);
     if(query == '') return;
     var store = StoreProvider.of<AppState>(context);
@@ -66,16 +71,27 @@ class SearchBarDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    //点击了搜索显示的页面
-    return Center(
-      child: Text('12312321'),
-    );
+//    var store = StoreProvider.of<AppState>(context);
+//    store.dispatch(getSearchResultAction(
+//      query,
+//      onSucceed: (){
+//        //点击了搜索显示的页面
+//        return Center(
+//          child: Text('q233'),
+//        );
+//      },
+//      onFailed: (notice)=>
+//          createFailedSnackBar(context, msg: '搜索失败：${notice.message}')));
+    return SearchResultGeneral(query);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     //点击了搜索窗显示的页面
-    return SearchContentView(tags, histories);
+    return SearchContentView(tags, histories, (q){
+      query = q;
+      showResults(context);
+    });
   }
 
   @override
@@ -87,8 +103,9 @@ class SearchBarDelegate extends SearchDelegate<String> {
 class SearchContentView extends StatefulWidget {
   List<TagEntity>tags;
   List<String>histories;
+  final callback;
 
-  SearchContentView(this.tags, this.histories);
+  SearchContentView(this.tags, this.histories, this.callback);
 
   @override
   _SearchContentViewState createState() => _SearchContentViewState(tags, histories);
@@ -123,7 +140,7 @@ class _SearchContentViewState extends State<SearchContentView> {
               ],
             ),
           ),
-          SearchItemView(false, items: tagStrs),
+          SearchItemView(false, widget.callback, items: tagStrs),
           SizedBox(height: 10,),
           Divider(height: 1, color: MaTheme.greyLight,),
           SizedBox(height: 10,),
@@ -144,7 +161,7 @@ class _SearchContentViewState extends State<SearchContentView> {
               ],
             ),
           ),
-          SearchItemView(true),
+          SearchItemView(true, widget.callback),
         ],
       ),
     );
@@ -160,7 +177,8 @@ class SearchItemView extends StatefulWidget {
   List<String> items;
   bool isHistory;
   _ViewModel vm;
-  SearchItemView(this.isHistory, {this.items, this.vm});
+  final callback;
+  SearchItemView(this.isHistory, this.callback, {this.items, this.vm});
 
   @override
   _SearchItemViewState createState(){
@@ -182,7 +200,7 @@ class _SearchItemViewState extends State<SearchItemView> {
         child: Wrap(
           spacing: 10,
           children: strings.map((string) {
-            return SearchItem(title: string);
+            return SearchItem(title: string, callback: widget.callback,);
           }).toList(),
         )
     );
@@ -206,9 +224,11 @@ class _SearchItemViewState extends State<SearchItemView> {
 }
 
 class SearchItem extends StatefulWidget {
-  @required
-  final String title;
-  const SearchItem({Key key, this.title}) : super(key: key);
+  @required final String title;
+  @required final callback;
+
+
+  const SearchItem({Key key, this.title, this.callback}) : super(key: key);
   @override
   _SearchItemState createState() => _SearchItemState();
 }
@@ -227,9 +247,7 @@ class _SearchItemState extends State<SearchItem> {
           ),
           backgroundColor: Colors.white,
         ),
-        onTap: () {
-          print(widget.title);
-        },
+        onTap: () => widget.callback(widget.title),
       ),
     );
   }
