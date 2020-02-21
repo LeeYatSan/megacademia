@@ -6,3 +6,4 @@ export 'user.dart';
 export 'notification.dart';
 export 'discovery.dart';
 export 'search.dart';
+export 'hashtag.dart';

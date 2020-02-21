@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:megacademia/actions/account.dart';
 import 'package:meta/meta.dart';
@@ -6,14 +5,12 @@ import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '../../../theme.dart';
-import '../../../config.dart';
-import '../../../components/common/app_navigate.dart';
-import '../../../components/common/failed_snack_bar.dart';
-import 'authorize_user.dart';
-import '../../../factory.dart';
-import '../../../models/models.dart';
-import 'register.dart';
+import '../../theme.dart';
+import '../../config.dart';
+import '../../components/components.dart';
+import '../../factory.dart';
+import '../../models/models.dart';
+import '../pages.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({

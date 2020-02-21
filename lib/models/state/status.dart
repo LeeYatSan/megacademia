@@ -2,8 +2,6 @@ import 'package:megacademia/models/entity/status.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../entity/user.dart';
-
 part 'status.g.dart';
 
 @JsonSerializable()

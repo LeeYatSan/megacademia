@@ -33,6 +33,9 @@ AppState _$AppStateFromJson(Map<String, dynamic> json) {
     search: json['search'] == null
         ? null
         : SearchState.fromJson(json['search'] as Map<String, dynamic>),
+    hashTag: json['hashTag'] == null
+        ? null
+        : HashTagState.fromJson(json['hashTag'] as Map<String, dynamic>),
   );
 }
 
@@ -47,4 +50,5 @@ Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
       'notification': instance.notification,
       'discovery': instance.discovery,
       'search': instance.search,
+      'hashTag': instance.hashTag,
     };

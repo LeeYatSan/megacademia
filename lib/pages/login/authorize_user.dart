@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import '../../../theme.dart';
-import '../../../config.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-import '../../../components/common/app_navigate.dart';
-import '../../../models/models.dart';
+import '../../components/components.dart';
+import '../../models/models.dart';
+import '../../theme.dart';
+import '../../icons.dart';
+import '../../config.dart';
 
 class AuthorizeLogin extends StatelessWidget {
   AuthorizeLogin({Key key}) : super(key: key);
@@ -30,6 +31,10 @@ class AuthorizeLogin extends StatelessWidget {
         appBar: AppBar(
           title: Text('Mastodon授权登录', style: TextStyle(color: Colors.white)),
           backgroundColor: MaTheme.maYellows,
+          leading: IconButton(
+            icon: Icon(MaIcon.back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
         withZoom: true,
         withLocalStorage: true,

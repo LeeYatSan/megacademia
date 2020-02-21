@@ -239,6 +239,7 @@ class _BodyState extends State<_Body> {
           child: CustomScrollView(
             key: PageStorageKey<String>('followingStatus'),
             physics: const AlwaysScrollableScrollPhysics(),
+            controller: scrollController,
             slivers: <Widget>[
               SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -280,11 +281,8 @@ class _BodyState extends State<_Body> {
           child: CustomScrollView(
             key: PageStorageKey<String>('allStatus'),
             physics: const AlwaysScrollableScrollPhysics(),
+            controller: scrollController,
             slivers: <Widget>[
-//              SliverOverlapInjector(
-//                handle:
-//                NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-//              ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                       (context, index) => Status(

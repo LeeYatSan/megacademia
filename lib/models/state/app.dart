@@ -25,6 +25,7 @@ class AppState {
   final NotificationState notification;
   final DiscoveryState discovery;
   final SearchState search;
+  final HashTagState hashTag;
 
   AppState({
     String version,
@@ -37,6 +38,7 @@ class AppState {
     NotificationState notification,
     DiscoveryState discovery,
     SearchState search,
+    HashTagState hashTag,
   })  : this.version = version ?? MaConfig.packageInfo.version,
         this.clientId = clientId ?? '',
         this.clientSecret = clientSecret ?? '',
@@ -46,7 +48,8 @@ class AppState {
         this.status = status ?? StatusState(),
         this.notification = notification ?? NotificationState(),
         this.discovery = discovery ?? DiscoveryState(),
-        this.search = search ?? SearchState();
+        this.search = search ?? SearchState(),
+        this.hashTag = hashTag ?? HashTagState();
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
       _$AppStateFromJson(json);
@@ -64,6 +67,7 @@ class AppState {
     NotificationState notification,
     DiscoveryState discovery,
     SearchState search,
+    HashTagState hashTag,
   }) =>
       AppState(
         version: version ?? this.version,
@@ -76,5 +80,6 @@ class AppState {
         notification: notification ?? this.notification,
         discovery: discovery ?? this.discovery,
         search: search ?? this.search,
+        hashTag: hashTag ?? this.hashTag,
       );
 }

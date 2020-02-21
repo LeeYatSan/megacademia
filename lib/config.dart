@@ -116,4 +116,8 @@ class MaApi {
   }
   static String Trends = '$maApiSubBaseUrl/trends'; // 获取趋势
   static String Search = '/api/v2/search';// 搜索
+  static String Tag = '/tag';// 标签
+  static String HashTagTimeline(arg) {
+    return '$maApiSubBaseUrl/timelines/tag/$arg'; // 删除某条通知
+  }
 }

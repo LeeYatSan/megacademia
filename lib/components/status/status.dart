@@ -7,12 +7,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/models.dart';
 import '../../theme.dart';
+import '../../config.dart';
 import '../../pages/pages.dart';
 import '../../actions/actions.dart';
 import '../../utils/number.dart';
 import '../../utils/date_until.dart';
 import '../../components/components.dart';
-
 
 class Status extends StatefulWidget {
   final StatusEntity status;
@@ -250,20 +250,32 @@ class _StatusState extends State<Status> {
       child: Html(
         data: text,
         onLinkTap: (url) {
-          final flutterWebview = new FlutterWebviewPlugin();
-          flutterWebview.onUrlChanged.listen((url) {
-            _launchURL(url);
-          });
-          AppNavigate.push(
+          if(url.contains(MaApi.Tag)){
+            AppNavigate.push(
               context,
-              WebviewScaffold(
-                url: url,
-                appBar: createAppBar(context, '外部网页'),
-                withZoom: true,
-                withLocalStorage: true,
-                clearCookies: true,
-              )
-          );
+              HashTagPage(url.split('/').last),
+            );
+          }
+          else{
+            final flutterWebview = new FlutterWebviewPlugin();
+            flutterWebview.onUrlChanged.listen((url) {
+              if(url.contains('bd')){
+                _launchURL(url);
+              }
+              else{
+                AppNavigate.push(
+                    context,
+                    WebviewScaffold(
+                      url: url,
+                      appBar: createAppBar(context, '外部网页'),
+                      withZoom: true,
+                      withLocalStorage: true,
+                      clearCookies: true,
+                    )
+                );
+              }
+            });
+          }
         },
       ),
     );

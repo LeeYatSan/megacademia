@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:megacademia/models/entity/Website.dart';
+import 'package:megacademia/pages/common/hashTagTimeline.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -207,13 +208,7 @@ class _BodyState extends State<_Body> {
       onTap: (){
         AppNavigate.push(
             context,
-            WebviewScaffold(
-              url: vm.tags[index].url,
-              appBar: createAppBar(context, '# ${vm.tags[index].name}'),
-              withZoom: true,
-              withLocalStorage: true,
-              clearCookies: true,
-            )
+            HashTagPage(vm.tags[index].name),
         );
       },
     );

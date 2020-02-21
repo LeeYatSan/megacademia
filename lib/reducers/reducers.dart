@@ -1,4 +1,5 @@
 import 'package:megacademia/reducers/discovery.dart';
+import 'package:megacademia/reducers/hashtag.dart';
 import 'package:megacademia/reducers/notification.dart';
 import 'package:megacademia/reducers/search.dart';
 
@@ -30,6 +31,7 @@ AppState appReducer(AppState state, action) {
       notification: notificationReducer(state.notification, action),
       discovery: discoveryReducer(state.discovery, action),
       search: searchReducer(state.search, action),
+      hashTag: hashTagReducer(state.hashTag, action),
     );
   }
 }

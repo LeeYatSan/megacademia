@@ -5,6 +5,7 @@ export 'state/user.dart';
 export 'state/status.dart';
 export 'state/notification.dart';
 export 'state/discovery.dart';
+export 'state/hashtag.dart';
 
 export 'entity/notice.dart';
 export 'entity/user.dart';

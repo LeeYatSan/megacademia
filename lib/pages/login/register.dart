@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../config.dart';
+import '../../config.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-import '../../../components/common/app_navigate.dart';
-import '../../../components/common/app_bar.dart';
-import '../../../factory.dart';
+import '../../components/common/app_navigate.dart';
+import '../../components/common/app_bar.dart';
+import '../../factory.dart';
 
 
 class RegisterAccount extends StatelessWidget {

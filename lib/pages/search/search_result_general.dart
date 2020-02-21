@@ -41,7 +41,6 @@ class _SearchResultGeneralState extends State<SearchResultGeneral> {
           store: StoreProvider.of<AppState>(context),
           vm: vm,
         ),
-        bottomNavigationBar: MaTabBar(tabIndex: 1),
       ),
     );
   }
@@ -148,15 +147,17 @@ class _BodyState extends State<_Body> {
     final screenSize = MediaQuery.of(context).size;
     return Column(
       children: <Widget>[
-        Divider(thickness: 1, color: MaTheme.greyLight,),
-        Row(
-          children: <Widget>[
-            Icon(Icons.account_circle, color: MaTheme.maYellows,),
-            SizedBox(width: 10,),
-            Text('匹配用户',
-              style: TextStyle(fontWeight: FontWeight.w700),
-            ),
-          ],
+        Container(
+          margin: EdgeInsets.only(left: 10,  bottom: 10, top: 10),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.account_circle, color: MaTheme.maYellows,),
+              SizedBox(width: 10,),
+              Text('匹配用户',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
         ),
         Container(
           margin: EdgeInsets.all(5),
@@ -228,23 +229,24 @@ class _BodyState extends State<_Body> {
     final screenSize = MediaQuery.of(context).size;
     return Column(
       children: <Widget>[
-        Divider(thickness: 1, color: MaTheme.greyLight,),
-        Row(
-          children: <Widget>[
-            Icon(Icons.comment, color: MaTheme.maYellows,),
-            SizedBox(width: 10,),
-            Text('匹配动态',
-              style: TextStyle(fontWeight: FontWeight.w700),
-            ),
-          ],
+        Container(
+          margin: EdgeInsets.only(left: 10,  bottom: 10, top: 10),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.comment, color: MaTheme.maYellows,),
+              SizedBox(width: 10),
+              Text('匹配动态',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
         ),
         Container(
-          margin: EdgeInsets.all(5),
           width: screenSize.width,
           child: ListView.builder(
             shrinkWrap: true,
             controller: userScrollController,
-            itemCount: widget.vm.searchResult.account.length,
+            itemCount: widget.vm.searchResult.statuses.length,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index)
               => Status(status: widget.vm.searchResult.statuses[index],),
@@ -268,7 +270,6 @@ class _BodyState extends State<_Body> {
     }
     else{
       return Container(
-        margin: EdgeInsets.all(10),
         child: Stack(
           children: <Widget>[
             RefreshIndicator(
