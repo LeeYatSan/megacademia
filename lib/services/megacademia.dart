@@ -193,4 +193,9 @@ class MaService {
     return requestNoBase('GET', path, data: data, headers: headers,
         queryParameters: queryParameters);
   }
+
+  Future<MaApiResponse> postFormNoBase(String path, {FormData data,
+    Map<String, dynamic> headers}) async {
+    return requestNoBase('POST', path, data: data, headers: headers);
+  }
 }

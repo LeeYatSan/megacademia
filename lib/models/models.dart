@@ -16,5 +16,6 @@ export 'entity/status.dart';
 export 'entity/notification.dart';
 export 'entity/Website.dart';
 export 'entity/search.dart';
+export 'entity/interest.dart';
 
 export 'form/account.dart';

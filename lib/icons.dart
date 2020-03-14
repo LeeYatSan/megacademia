@@ -27,12 +27,23 @@ class MaIcon{
   static var setting = IconData(0xe606, fontFamily: MaGlobalValue.fontFamily);
   static var weather = IconData(0xe62f, fontFamily: MaGlobalValue.fontFamily);
   static var baiduNetDisk = IconData(0xe600, fontFamily: MaGlobalValue.fontFamily);
+  static var uploadFile = IconData(0xe68d, fontFamily: MaGlobalValue.fontFamily);
 
   static var rank = [
-    Icon(Icons.looks_one, color: MaTheme.redDark,),
-    Icon(Icons.looks_two, color: MaTheme.redNormal,),
-    Icon(Icons.looks_3, color: MaTheme.redNormal,),
-    Icon(Icons.looks_4, color: MaTheme.maYellows,),
-    Icon(Icons.looks_5, color: MaTheme.maYellows,),
+    Text('  1 ', style: TextStyle(color: MaTheme.redDark, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('  2 ', style: TextStyle(color: MaTheme.redNormal, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('  3 ', style: TextStyle(color: MaTheme.redNormal, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('  4 ', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('  5 ', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('  6 ', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('  7 ', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('  8 ', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('  9 ', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('10', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('11', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('12', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('13', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('14', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
+    Text('15', style: TextStyle(color: MaTheme.maYellows, fontWeight: FontWeight.w700, fontSize: 18),),
   ];
 }

@@ -4,7 +4,9 @@ import 'package:logging/logging.dart';
 class MaConfig {
   static PackageInfo packageInfo;
   static var domain = 'leeyatsan.cn';
+  static var domainExtended = '10.0.2.2:8000';
   static var maApiBaseUrl = 'https://$domain';
+  static var maApiBaseUrlExtended = 'http://$domainExtended';
   static var debug = false;
   static var loggerLevel = Level.INFO;
   static var isLogAction = false;
@@ -50,6 +52,9 @@ class MaApi {
   static String Muting = '$maApiSubBaseUrl/mutes'; // 获取静默用户列表
   static String Blocked = '$maApiSubBaseUrl/blocks'; // 获取黑名单
   static String Relationship = '$maApiSubBaseUrl/accounts/relationships'; // 获取关系
+  static String Interests = '${MaConfig.maApiBaseUrlExtended}$maApiSubBaseUrl/extend/interest'; // 获取兴趣
+  static String UploadFile = '${MaConfig.maApiBaseUrlExtended}$maApiSubBaseUrl/extend/upload_file'; // 获取上传文件
+  static String CSRF = '${MaConfig.maApiBaseUrlExtended}$maApiSubBaseUrl/extend/get_csrf'; // 获取CSRF认证
   static String Account(arg) {
     return '$maApiSubBaseUrl/accounts/$arg';
   }  // 获取用户信息

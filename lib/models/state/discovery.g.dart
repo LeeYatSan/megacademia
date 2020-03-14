@@ -12,6 +12,11 @@ DiscoveryState _$DiscoveryStateFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : TagEntity.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    interests: (json['interests'] as List)
+        ?.map((e) => e == null
+            ? null
+            : InterestEntity.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     histories: (json['histories'] as List)?.map((e) => e as String)?.toList(),
   );
 }
@@ -19,5 +24,6 @@ DiscoveryState _$DiscoveryStateFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$DiscoveryStateToJson(DiscoveryState instance) =>
     <String, dynamic>{
       'tags': instance.tags,
+      'interests': instance.interests,
       'histories': instance.histories,
     };

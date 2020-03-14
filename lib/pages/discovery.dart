@@ -14,6 +14,7 @@ import '../actions/actions.dart';
 import '../theme.dart';
 import '../icons.dart';
 import 'search/search_delegate.dart';
+import 'search/search_result_general.dart';
 
 class DiscoveryPage extends StatefulWidget {
 
@@ -34,6 +35,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
     return StoreConnector<AppState, _ViewModel>(
       converter: (store) => _ViewModel(
         tags: store.state.discovery.tags,
+        interests: store.state.discovery.interests,
       ),
       builder: (context, vm) => Scaffold(
         body: _Body(
@@ -49,9 +51,11 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
 
 class _ViewModel {
   final List<TagEntity> tags;
+  final List<InterestEntity> interests;
 
   _ViewModel({
     @required this.tags,
+    @required this.interests,
   });
 }
 
@@ -73,12 +77,14 @@ class _BodyState extends State<_Body> {
   static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   final scrollController = ScrollController();
   var _isLoadingTags = false;
+  var _isLoadingInterests = false;
 
   @override
   void initState() {
     super.initState();
     scrollController.addListener(_scrollListener);
     _loadTags();
+    _loadInterests();
   }
 
   @override
@@ -93,6 +99,7 @@ class _BodyState extends State<_Body> {
     if (scrollController.position.pixels ==
         scrollController.position.maxScrollExtent) {
         _loadTags();
+        _loadInterests();
     }
   }
 
@@ -140,6 +147,50 @@ class _BodyState extends State<_Body> {
     return completer.future;
   }
 
+  void _loadInterests({
+    bool refresh = false,
+    Completer<Null> completer,
+  }) {
+    if (_isLoadingInterests) {
+      completer?.complete();
+      return;
+    }
+
+    if (!refresh) {
+      setState(() {
+        _isLoadingInterests = true;
+      });
+    }
+
+    widget.store.dispatch(getInterestsAction(
+      onSucceed: () {
+        if (!refresh) {
+          setState(() {
+            _isLoadingInterests = false;
+          });
+        }
+        completer?.complete();
+      },
+      onFailed: (notice) {
+        if (!refresh) {
+          setState(() {
+            _isLoadingInterests = false;
+          });
+        }
+        completer?.complete();
+        createFailedSnackBar(context, notice: notice);
+      },
+    ));
+  }
+
+  Future<Null> _refreshInterests() {
+    final completer = Completer<Null>();
+    _loadInterests(
+      completer: completer,
+    );
+    return completer.future;
+  }
+
   Widget _buildHotPad() {
     final screenSize =  MediaQuery.of(context).size;
     return Container(
@@ -169,7 +220,7 @@ class _BodyState extends State<_Body> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: widget.vm.tags.length,
                     itemBuilder: (context, index){
-                  return _buildHotPadItem(context,widget.vm, index);
+                  return _buildHotPadItem(context, widget.vm, index);
                 }),
             ),
             SizedBox(height: 5,),
@@ -209,6 +260,73 @@ class _BodyState extends State<_Body> {
         AppNavigate.push(
             context,
             HashTagPage(vm.tags[index].name),
+        );
+      },
+    );
+  }
+
+  Widget _buildInterestPad() {
+    final screenSize =  MediaQuery.of(context).size;
+    return Container(
+        height: screenSize.height*0.35*2.5,
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(Icons.favorite_border, color: MaTheme.redNormal,),
+                SizedBox(width: 10,),
+                Text('近期兴趣',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+                SizedBox(width: 10,),
+                GestureDetector(
+                  child: Icon(Icons.refresh, color: MaTheme.maYellows, size: 12,),
+                  onTap: _refreshInterests,
+                )
+              ],
+            ),
+            SizedBox(height: 5,),
+            Divider(height: 1, color: MaTheme.greyLight,),
+            SizedBox(height: 5,),
+            Expanded(
+              child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: widget.vm.interests.length,
+                  itemBuilder: (context, index){
+                    return _buildInterestPadItem(context, widget.vm, index);
+                  }),
+            ),
+            SizedBox(height: 5,),
+            Divider(height: 1, color: MaTheme.greyLight,),
+            SizedBox(height: 5,),
+          ],
+        )
+    );
+  }
+
+  Widget _buildInterestPadItem(BuildContext context, _ViewModel vm, int index){
+    return GestureDetector(
+      child: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 8,),
+              Row(
+                children: <Widget>[
+                  MaIcon.rank[index],
+                  SizedBox(width: 10,),
+                  Text('${vm.interests[index].interestName}',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),),
+                ],
+              ),
+              SizedBox(height: 8,),
+            ],
+          )
+      ),
+      onTap: (){
+        AppNavigate.push(
+          context,
+          SearchResultGeneral(vm.interests[index].interestName),
         );
       },
     );
@@ -315,6 +433,7 @@ class _BodyState extends State<_Body> {
             physics: const AlwaysScrollableScrollPhysics(),
             children: <Widget>[
               _buildHotPad(),
+              _buildInterestPad(),
               _buildWebsiteLink(),
             ],
           ),
@@ -343,6 +462,7 @@ class _BodyState extends State<_Body> {
         ),
         title: Text('发现', style: TextStyle(fontWeight: FontWeight.w700),),
         actions: <Widget>[
+          uploadFile(),
           GestureDetector(
             child: Container(
               margin: EdgeInsets.only(right: 30.0),

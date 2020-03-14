@@ -7,6 +7,7 @@ export 'common/profile_side_bar_button.dart';
 export 'common/user_list.dart';
 export 'common/user_tile.dart';
 export 'common/video_player.dart';
+export 'common/upload_file_button.dart';
 
 export 'status/status.dart';
 

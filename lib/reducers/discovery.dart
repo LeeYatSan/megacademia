@@ -6,6 +6,7 @@ import '../models/models.dart';
 
 final discoveryReducer = combineReducers<DiscoveryState>([
   TypedReducer<DiscoveryState, GetTrendsAction>(_getTrends),
+  TypedReducer<DiscoveryState, GetInterestsAction>(_getInterests),
   TypedReducer<DiscoveryState, SaveSearchHistoryAction>(_saveSearchHistoryAction),
   TypedReducer<DiscoveryState, ClearSearchHistoryAction>(_clearSearchHistoryAction),
 ]);
@@ -23,6 +24,22 @@ DiscoveryState _getTrends(DiscoveryState state, GetTrendsAction action) {
 
   return state.copyWith(
     tags: tags,
+  );
+}
+
+DiscoveryState _getInterests(DiscoveryState state, GetInterestsAction action) {
+  var interestMap = Map.fromIterable(
+    action.interests,
+    key: (v) => (v as InterestEntity),
+    value: (v) => (v as InterestEntity).weight,
+  );
+  Comparator<InterestEntity> interestComparator = (a, b)
+  => a.weight.compareTo(b.weight);
+
+  final List<InterestEntity> interests = interestMap.keys.toList()..sort(interestComparator);
+
+  return state.copyWith(
+    interests: interests,
   );
 }
 
