@@ -215,7 +215,7 @@ ThunkAction<AppState> accountEditImageAction(
       void Function(NoticeEntity) onFailed,
     }) =>
         (Store<AppState> store) async {
-      final wgService = await MaFactory().getMaService();
+      final maService = await MaFactory().getMaService();
 
       var state = store.state.account;
 
@@ -234,7 +234,7 @@ ThunkAction<AppState> accountEditImageAction(
       print('access token: ${state.accessToken}');
       print('$type: ${image ?? (_isHeader ? state.user.header : state.user.avatar)}');
 
-      final response = await wgService.patchForm(
+      final response = await maService.patchForm(
         MaApi.UpdateAccount,
         headers: {'Authorization': state.accessToken,},
         data: formData,

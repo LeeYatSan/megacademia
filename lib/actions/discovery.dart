@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
+import 'package:path/path.dart';
 
 import '../factory.dart';
 import '../models/models.dart';
@@ -111,5 +112,42 @@ ThunkAction<AppState> getInterestsAction(
         }
       } else {
         if (onFailed != null) onFailed(NoticeEntity(message: response.message));
+      }
+    };
+
+
+// 上传文件
+ThunkAction<AppState> uploadFileAction(
+    var file,
+    {
+      void Function(String) onSucceed,
+      void Function(NoticeEntity) onFailed,
+    }) =>
+        (Store<AppState> store) async {
+      final maService = await MaFactory().getMaService();
+
+      if(file == null) return;
+
+      // 使用拓展服务器
+      var responseCSRF = await maService.getNoBase(MaApi.CSRF);
+      if(responseCSRF.code == MaApiResponse.codeOk){
+        var csrf = responseCSRF.data['csrf_token'];
+        var state = store.state.account;
+        var formData = FormData.fromMap({
+          'file' : MultipartFile.fromFileSync(file, filename: absolute(file)),
+          'csrfmiddlewaretoken': csrf,
+          'user_id': state.user.id
+        });
+        final response = await maService.postFormNoBase(
+          MaApi.UploadFile,
+          data: formData,
+        );
+        if (response.code == MaApiResponse.codeOk) {
+          var downloadURL = response.data['sharing_path'];
+          if (onSucceed != null) onSucceed(downloadURL);
+        }
+        else {
+          if (onFailed != null) onFailed(NoticeEntity(message: response.message));
+        }
       }
     };

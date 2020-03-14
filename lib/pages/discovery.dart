@@ -462,7 +462,7 @@ class _BodyState extends State<_Body> {
         ),
         title: Text('发现', style: TextStyle(fontWeight: FontWeight.w700),),
         actions: <Widget>[
-          uploadFile(),
+          UploadFile(),
           GestureDetector(
             child: Container(
               margin: EdgeInsets.only(right: 30.0),
