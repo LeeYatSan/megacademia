@@ -323,12 +323,27 @@ class _BodyState extends State<_Body> {
             physics: const AlwaysScrollableScrollPhysics(),
             separatorBuilder: (context, index) => Divider(height: 1),
             itemCount: widget.vm.targetList.length,
-            itemBuilder: (context, index) => UserTile(
-              key: Key(widget.vm.targetList[index].id.toString()),
-              user: widget.vm.targetList[index],
-              type: _type,
-              store: widget.store,
-            ),
+            itemBuilder: (context, index){
+              if(_type != 1){
+                return UserTile(
+                  key: Key(widget.vm.targetList[index].id.toString()),
+                  user: widget.vm.targetList[index],
+                  type: _type,
+                  store: widget.store,
+                );
+              }
+              else{
+                widget.store.dispatch(relationshipAction(
+                    userId: widget.vm.targetList[index].id,
+                ));
+                return UserTile(
+                  key: Key(widget.vm.targetList[index].id.toString()),
+                  user: widget.vm.targetList[index],
+                  type: _type,
+                  store: widget.store,
+                );
+              }
+            },
           ),
         ),
         Visibility(

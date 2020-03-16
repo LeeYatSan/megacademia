@@ -52,7 +52,7 @@ class MaDrawer extends StatelessWidget{
             )),
             createMaListTile(context, MaIcon.mute_user, '静默用户', MuteUserPage()),
             createMaListTile(context, MaIcon.block_user, '黑名单', BlockUserPage()),
-            createMaListTile(context, MaIcon.like, '我赞过的', LikePage()),
+            createMaListTile(context, MaIcon.like, '我点赞的', LikePage()),
             createMaListTile(context, MaIcon.setting, '设置', SettingPage()),
           ],
         ),

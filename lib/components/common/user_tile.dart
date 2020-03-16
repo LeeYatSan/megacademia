@@ -73,7 +73,12 @@ class UserTile extends StatelessWidget {
       case 1:{
         AppState currState = StoreProvider.of<AppState>(context).state;
         RelationshipEntity relationship = currState.user.currRelationship;
-        trailing = relationship.following ? _following(context) : _follow(context);
+        if(relationship == null){
+          trailing = _follow(context);
+        }
+        else{
+          trailing = relationship.following ? _following(context) : _follow(context);
+        }
       }break;
       case 2:{
         trailing = Container(

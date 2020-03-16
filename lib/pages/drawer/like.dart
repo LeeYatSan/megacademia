@@ -155,7 +155,7 @@ class _BodyState extends State<_Body> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: createAppBar(context, '我赞过的'),
+      appBar: createAppBar(context, '我点赞的'),
       body: SafeArea(
         child: Stack(
           children: <Widget>[

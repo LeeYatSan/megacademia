@@ -134,7 +134,7 @@ class _BodyState extends State<_Body> {
             ),
             TextField(
               decoration: InputDecoration(
-                labelText: '签名',
+                labelText: '研究兴趣领域',
                 labelStyle: TextStyle(
                   color: MaTheme.maYellows,
                   fontSize: 12,
