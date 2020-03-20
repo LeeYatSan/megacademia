@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
@@ -13,10 +14,14 @@ import '../../pages/pages.dart';
 class SearchResultGeneral extends StatefulWidget {
 
   String query;
+  bool isInterest;
 
   SearchResultGeneral(
     this.query,
-    {Key key,}
+    {
+      this.isInterest = false,
+      Key key,
+    }
   ) : super(key: key);
 
   @override
@@ -34,6 +39,7 @@ class _SearchResultGeneralState extends State<SearchResultGeneral> {
         searchResult: store.state.search.searchResult,
         query: widget.query,
         accountId: store.state.account.user.id,
+        isInterest: widget.isInterest,
       ),
       builder: (context, vm) => Scaffold(
         body: _Body(
@@ -50,11 +56,13 @@ class _ViewModel {
   final SearchEntity searchResult;
   final String query;
   final String accountId;
+  final bool isInterest;
 
   _ViewModel({
     @required this.searchResult,
     @required this.query,
     @required this.accountId,
+    @required this.isInterest,
   });
 }
 
@@ -117,6 +125,7 @@ class _BodyState extends State<_Body> {
 
     widget.store.dispatch(getSearchResultAction(
       widget.vm.query,
+      isInterest: widget.vm.isInterest,
       onSucceed: () {
         if (!refresh) {
           setState(() {
@@ -260,7 +269,7 @@ class _BodyState extends State<_Body> {
 
   Widget _buildBody() {
     final result = widget.vm.searchResult;
-    if(result.account.length == 0 && result.statuses.length == 0){
+    if(result == null || (result.account.length == 0 && result.statuses.length == 0)){
       return Container(
         child: Center(
           child: Text('没有「${widget.vm.query}」相关结果，请重新搜索～',

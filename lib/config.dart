@@ -55,6 +55,7 @@ class MaApi {
   static String Interests = '${MaConfig.maApiBaseUrlExtended}$maApiSubBaseUrl/extend/interest'; // 获取兴趣
   static String UploadFile = '${MaConfig.maApiBaseUrlExtended}$maApiSubBaseUrl/extend/upload_file'; // 获取上传文件
   static String CSRF = '${MaConfig.maApiBaseUrlExtended}$maApiSubBaseUrl/extend/get_csrf'; // 获取CSRF认证
+  static String SearchInterest = '${MaConfig.maApiBaseUrlExtended}$maApiSubBaseUrl/extend/search_interest'; // 获取用户感兴趣的动态
   static String Account(arg) {
     return '$maApiSubBaseUrl/accounts/$arg';
   }  // 获取用户信息

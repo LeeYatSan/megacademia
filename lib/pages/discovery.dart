@@ -326,7 +326,7 @@ class _BodyState extends State<_Body> {
       onTap: (){
         AppNavigate.push(
           context,
-          SearchResultGeneral(vm.interests[index].interestName),
+          SearchResultGeneral(vm.interests[index].interestName, isInterest: true,),
         );
       },
     );

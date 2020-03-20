@@ -19,13 +19,23 @@ class GetSearchResultAction {
 ThunkAction<AppState> getSearchResultAction(
     String query,
     {
+      bool isInterest,
       void Function() onSucceed,
       void Function(NoticeEntity) onFailed,
     }) =>
         (Store<AppState> store) async {
+      isInterest = isInterest ?? false;
       final maService = await MaFactory().getMaService();
       var state = store.state.account;
-      var response = await maService.get(
+      var response = isInterest ?
+      await maService.get(
+        MaApi.SearchInterest,
+        queryParameters: {
+          'user_id' : state.user.id,
+          'user_token' : state.accessToken,
+          'q' : query
+        },) :
+      await maService.get(
         MaApi.Search,
         headers: {'Authorization': state.accessToken,},
         queryParameters: {'q' : query},
