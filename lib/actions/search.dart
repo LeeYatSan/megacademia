@@ -32,6 +32,7 @@ ThunkAction<AppState> getSearchResultAction(
         MaApi.SearchInterest,
         queryParameters: {
           'user_id' : state.user.id,
+          'username' : state.user.username,
           'user_token' : state.accessToken,
           'q' : query
         },) :

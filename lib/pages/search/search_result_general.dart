@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/components.dart';
 import '../../models/models.dart';
 import '../../actions/actions.dart';
 import '../../theme.dart';
+import '../../config.dart';
 import '../../pages/pages.dart';
 
 class SearchResultGeneral extends StatefulWidget {
@@ -233,6 +235,19 @@ class _BodyState extends State<_Body> {
         }));
   }
 
+  _launchURL(var url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void _getSocialNetworkGraph(BuildContext context, var userID){
+    print("获取社交关系图");
+    _launchURL(MaApi.SocialNetworkGraph(userID));
+  }
+
   Widget _buildStatusList(){
     final screenSize = MediaQuery.of(context).size;
     return Column(
@@ -246,6 +261,12 @@ class _BodyState extends State<_Body> {
               Text('匹配动态',
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
+              SizedBox(width: 20),
+              widget.vm.isInterest ?
+                GestureDetector(
+                  child: Icon(Icons.device_hub, color: MaTheme.greyNormal,),
+                  onTap: ()=>_getSocialNetworkGraph(context, widget.store.state.account.user.id),
+                ) : null,
             ],
           ),
         ),

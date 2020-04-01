@@ -126,4 +126,7 @@ class MaApi {
   static String HashTagTimeline(arg) {
     return '$maApiSubBaseUrl/timelines/tag/$arg'; // 删除某条通知
   }
+  static String SocialNetworkGraph(arg) {
+    return '${MaConfig.maApiBaseUrlExtended}$maApiSubBaseUrl/extend/get_social_network_graph/$arg'; // 获取用户社交关系图
+  }
 }
