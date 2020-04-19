@@ -4,7 +4,8 @@ import 'package:logging/logging.dart';
 class MaConfig {
   static PackageInfo packageInfo;
   static var domain = 'leeyatsan.cn';
-  static var domainExtended = '10.0.2.2:8000';
+//  static var domainExtended = '10.0.2.2:8000';
+  static var domainExtended = '212.129.242.145:80';
   static var maApiBaseUrl = 'https://$domain';
   static var maApiBaseUrlExtended = 'http://$domainExtended';
   static var debug = false;
